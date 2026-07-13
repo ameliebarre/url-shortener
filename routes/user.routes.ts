@@ -1,6 +1,5 @@
 import express, { Request, Response } from 'express';
 import { z } from 'zod';
-import jwt from 'jsonwebtoken';
 import { usersTable } from '../models';
 import { hashPasswordWithSalt } from '../utils/hash';
 import { getUserByEmail, insertUser } from '../services/user.service';
@@ -8,6 +7,7 @@ import {
   signupPostRequestBodySchema,
   loginPostRequestBodySchema,
 } from '../validation/request.validation';
+import { createUserToken } from '../utils/token';
 
 const router = express.Router();
 
@@ -40,7 +40,7 @@ router.post(
         .status(400)
         .json({ error: `User with email ${email} already exists.` });
 
-    const { salt, password: hashedPassword } = hashPasswordWithSalt(password);
+    const { salt, hashedPassword } = hashPasswordWithSalt(password);
 
     const user = await insertUser(
       firstname,
@@ -77,22 +77,13 @@ router.post(
         .json({ error: `User with email ${email} does not exist.` });
     }
 
-    const { password: hashedPassword } = hashPasswordWithSalt(
-      password,
-      user.salt,
-    );
+    const { hashedPassword } = hashPasswordWithSalt(password, user.salt);
 
     if (user.password !== hashedPassword) {
       return res.status(400).json({ error: `Invalid password.` });
     }
 
-    const jwtSecret = process.env.JWT_SECRET;
-
-    if (!jwtSecret) {
-      throw new Error('JWT_SECRET is not defined');
-    }
-
-    const token = jwt.sign({ id: user.id }, jwtSecret);
+    const token = await createUserToken({ id: user.id });
 
     return res.json({ token });
   },
