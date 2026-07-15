@@ -1,10 +1,12 @@
 import express, { Request, Response } from 'express';
 import userRouter from './routes/user.routes';
+import { authenticationMiddleware } from './middlewares/auth.middleware';
 
 const app = express();
 const PORT = process.env.PORT ?? 8000;
 
 app.use(express.json());
+app.use(authenticationMiddleware);
 
 app.get('/', (req: Request, res: Response) => {
   return res.json({ status: 'Server is up and running' });
