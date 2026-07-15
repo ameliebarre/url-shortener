@@ -1,4 +1,4 @@
 export {
   authenticationMiddleware,
   ensureAuthenticated,
-} from "./auth.middleware";
+} from './auth.middleware';

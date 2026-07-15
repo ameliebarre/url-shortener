@@ -1,2 +1,2 @@
-export { getUserByEmail, insertUser } from "./user.service";
-export { insertUrl } from "./url.service";
+export { getUserByEmail, insertUser } from './user.service';
+export { insertUrl } from './url.service';

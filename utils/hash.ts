@@ -1,4 +1,4 @@
-import { randomBytes, createHmac } from "crypto";
+import { randomBytes, createHmac } from 'crypto';
 
 export interface HashedPassword {
   salt: string;
@@ -9,10 +9,10 @@ export function hashPasswordWithSalt(
   password: string,
   userSalt?: string,
 ): HashedPassword {
-  const salt = userSalt ?? randomBytes(256).toString("hex");
-  const hashedPassword = createHmac("sha256", salt)
+  const salt = userSalt ?? randomBytes(256).toString('hex');
+  const hashedPassword = createHmac('sha256', salt)
     .update(password)
-    .digest("hex");
+    .digest('hex');
 
   return { salt, hashedPassword };
 }

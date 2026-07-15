@@ -1,5 +1,5 @@
-import { db } from "@/db";
-import { urlsTable } from "@/models/url.model";
+import { db } from '@/db';
+import { urlsTable } from '@/models/url.model';
 
 export async function insertUrl(
   shortcode: string,

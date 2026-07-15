@@ -1,24 +1,24 @@
-import { Request, Response, NextFunction } from "express";
+import { Request, Response, NextFunction } from 'express';
 
-import { validateUserToken } from "@/utils";
+import { validateUserToken } from '@/utils';
 
 export function authenticationMiddleware(
   req: Request,
   res: Response,
   next: NextFunction,
 ): void {
-  const authHeader = req.headers["authorization"];
+  const authHeader = req.headers['authorization'];
 
   if (!authHeader) {
     next();
     return;
   }
 
-  const [scheme, token] = authHeader.split(" "); // [Bearer, <TOKEN>]
+  const [scheme, token] = authHeader.split(' '); // [Bearer, <TOKEN>]
 
-  if (scheme !== "Bearer" || !token) {
+  if (scheme !== 'Bearer' || !token) {
     res.status(400).json({
-      error: "Invalid Authorization header.",
+      error: 'Invalid Authorization header.',
     });
     return;
   }
@@ -35,7 +35,7 @@ export function ensureAuthenticated(
   if (!req.user || !req.user.id) {
     return res
       .status(401)
-      .json({ error: "You must be logged in to access this ressource" });
+      .json({ error: 'You must be logged in to access this ressource' });
   }
 
   next();

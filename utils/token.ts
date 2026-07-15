@@ -1,20 +1,21 @@
-import jwt from "jsonwebtoken";
-import { userTokenSchema } from "@/validation/token.validation";
-import { UserTokenPayload } from "@/types";
+import jwt from 'jsonwebtoken';
+
+import { UserTokenPayload } from '@/types';
+import { userTokenSchema } from '@/validation';
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
 export function isUserTokenPayload(
   payload: unknown,
 ): payload is UserTokenPayload {
-  return typeof payload === "object" && payload !== null && "id" in payload;
+  return typeof payload === 'object' && payload !== null && 'id' in payload;
 }
 
 export async function createUserToken(
   payload: UserTokenPayload,
 ): Promise<string> {
   if (!JWT_SECRET) {
-    throw new Error("JWT_SECRET is not defined");
+    throw new Error('JWT_SECRET is not defined');
   }
 
   const payloadValidated = await userTokenSchema.parseAsync(payload);
