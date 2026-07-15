@@ -1,4 +1,4 @@
-import jwt, { JwtPayload } from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 import { userTokenSchema } from '@/validation/token.validation';
 import { UserTokenPayload } from '@/types';
 

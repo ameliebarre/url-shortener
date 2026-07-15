@@ -20,7 +20,7 @@ type LoginBody = Pick<typeof usersTable.$inferInsert, 'email' | 'password'>;
 
 router.post(
   '/signup',
-  async (req: Request<{}, {}, SignupBody>, res: Response) => {
+  async (req: Request<never, never, SignupBody>, res: Response) => {
     const validationResult = await signupPostRequestBodySchema.safeParseAsync(
       req.body,
     );
@@ -56,7 +56,7 @@ router.post(
 
 router.post(
   '/login',
-  async (req: Request<{}, {}, LoginBody>, res: Response) => {
+  async (req: Request<never, never, LoginBody>, res: Response) => {
     const validationResult = await loginPostRequestBodySchema.safeParseAsync(
       req.body,
     );
