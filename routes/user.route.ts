@@ -1,25 +1,25 @@
-import express, { Request, Response } from 'express';
-import { z } from 'zod';
+import express, { Request, Response } from "express";
+import { z } from "zod";
 
-import { usersTable } from '@/models';
-import { getUserByEmail, insertUser } from '@/services';
+import { usersTable } from "@/models";
+import { getUserByEmail, insertUser } from "@/services";
 import {
   signupPostRequestBodySchema,
   loginPostRequestBodySchema,
-} from '@/validation';
-import { createUserToken, hashPasswordWithSalt } from '@/utils';
+} from "@/validation";
+import { createUserToken, hashPasswordWithSalt } from "@/utils";
 
 const router = express.Router();
 
 type SignupBody = Pick<
   typeof usersTable.$inferInsert,
-  'firstname' | 'lastname' | 'email' | 'password'
+  "firstname" | "lastname" | "email" | "password"
 >;
 
-type LoginBody = Pick<typeof usersTable.$inferInsert, 'email' | 'password'>;
+type LoginBody = Pick<typeof usersTable.$inferInsert, "email" | "password">;
 
 router.post(
-  '/signup',
+  "/signup",
   async (req: Request<never, never, SignupBody>, res: Response) => {
     const validationResult = await signupPostRequestBodySchema.safeParseAsync(
       req.body,
@@ -55,7 +55,7 @@ router.post(
 );
 
 router.post(
-  '/login',
+  "/login",
   async (req: Request<never, never, LoginBody>, res: Response) => {
     const validationResult = await loginPostRequestBodySchema.safeParseAsync(
       req.body,

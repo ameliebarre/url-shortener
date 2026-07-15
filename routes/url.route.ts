@@ -1,15 +1,15 @@
-import express, { Request, Response } from 'express';
-import { z } from 'zod';
-import { nanoid } from 'nanoid';
+import express, { Request, Response } from "express";
+import { z } from "zod";
+import { nanoid } from "nanoid";
 
-import { shortenPostRequestBodySchema } from '@/validation';
-import { insertUrl } from '@/services';
-import { ensureAuthenticated } from '@/middlewares';
+import { shortenPostRequestBodySchema } from "@/validation";
+import { insertUrl } from "@/services";
+import { ensureAuthenticated } from "@/middlewares";
 
 const router = express.Router();
 
 router.post(
-  '/shorten',
+  "/shorten",
   ensureAuthenticated,
   async (req: Request, res: Response) => {
     const validationResult = await shortenPostRequestBodySchema.safeParseAsync(

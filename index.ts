@@ -1,6 +1,6 @@
-import express, { Request, Response } from 'express';
-import { urlRouter, userRouter } from '@/routes';
-import { authenticationMiddleware } from '@/middlewares';
+import express, { Request, Response } from "express";
+import { urlRouter, userRouter } from "@/routes";
+import { authenticationMiddleware } from "@/middlewares";
 
 const app = express();
 const PORT = process.env.PORT ?? 8000;
@@ -8,11 +8,11 @@ const PORT = process.env.PORT ?? 8000;
 app.use(express.json());
 app.use(authenticationMiddleware);
 
-app.get('/', (req: Request, res: Response) => {
-  return res.json({ status: 'Server is up and running' });
+app.get("/", (req: Request, res: Response) => {
+  return res.json({ status: "Server is up and running" });
 });
 
-app.use('/auth', userRouter);
+app.use("/auth", userRouter);
 app.use(urlRouter);
 
 app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));

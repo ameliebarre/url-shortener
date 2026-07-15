@@ -1,15 +1,15 @@
-import { pgTable, timestamp, uuid, varchar } from 'drizzle-orm/pg-core';
+import { pgTable, timestamp, uuid, varchar } from "drizzle-orm/pg-core";
 
-import { usersTable } from '@/models';
+import { usersTable } from "@/models";
 
-export const urlsTable = pgTable('url', {
+export const urlsTable = pgTable("url", {
   id: uuid().primaryKey().defaultRandom(),
-  shortcode: varchar('code', { length: 155 }).notNull(),
-  targetUrl: varchar('target_url').notNull(),
-  userId: uuid('user_id')
+  shortcode: varchar("code", { length: 155 }).notNull(),
+  targetUrl: varchar("target_url").notNull(),
+  userId: uuid("user_id")
     .references(() => usersTable.id)
     .notNull(),
 
-  createdAt: timestamp('created_at').defaultNow().notNull(),
-  updatedAt: timestamp('updated_at').$onUpdate(() => new Date()),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").$onUpdate(() => new Date()),
 });
