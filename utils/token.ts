@@ -1,20 +1,13 @@
 import jwt, { JwtPayload } from 'jsonwebtoken';
-import {
-  userTokenSchema,
-  UserTokenPayload,
-} from '../validation/token.validation';
-import { UserPayload } from '../types/user.type';
+import { userTokenSchema } from '../validation/token.validation';
+import { UserTokenPayload } from '../types/user.type';
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
-export function isUserPayload(payload: unknown): payload is UserPayload {
-  return (
-    typeof payload === 'object' &&
-    payload !== null &&
-    'firstname' in payload &&
-    'lastname' in payload &&
-    'email' in payload
-  );
+export function isUserTokenPayload(
+  payload: unknown,
+): payload is UserTokenPayload {
+  return typeof payload === 'object' && payload !== null && 'id' in payload;
 }
 
 export async function createUserToken(
@@ -29,11 +22,11 @@ export async function createUserToken(
   return jwt.sign(payloadValidated, JWT_SECRET);
 }
 
-export function validateUserToken(token: string): UserPayload | null {
+export function validateUserToken(token: string): UserTokenPayload | null {
   try {
     const payload = jwt.verify(token, JWT_SECRET!);
 
-    if (!isUserPayload(payload)) {
+    if (!isUserTokenPayload(payload)) {
       return null;
     }
 

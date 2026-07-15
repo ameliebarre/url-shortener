@@ -4,7 +4,7 @@ import { usersTable } from './user.model';
 export const urlsTable = pgTable('url', {
   id: uuid().primaryKey().defaultRandom(),
   shortcode: varchar('code', { length: 155 }).notNull(),
-  target: varchar('target_url').notNull(),
+  targetUrl: varchar('target_url').notNull(),
   userId: uuid('user_id')
     .references(() => usersTable.id)
     .notNull(),

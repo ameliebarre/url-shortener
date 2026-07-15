@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import userRouter from './routes/user.routes';
+import { urlRouter, userRouter } from './routes';
 import { authenticationMiddleware } from './middlewares/auth.middleware';
 
 const app = express();
@@ -13,5 +13,6 @@ app.get('/', (req: Request, res: Response) => {
 });
 
 app.use('/auth', userRouter);
+app.use(urlRouter);
 
 app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));

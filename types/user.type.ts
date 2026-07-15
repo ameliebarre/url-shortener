@@ -1,7 +1,3 @@
-export interface UserPayload {
+export interface UserTokenPayload {
   id: string;
-  firstname: string;
-  lastname: string;
-  email: string;
-  password: string;
 }

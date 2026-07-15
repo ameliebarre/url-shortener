@@ -6,6 +6,7 @@ export function authenticationMiddleware(
   res: Response,
   next: NextFunction,
 ): void {
+  console.log('req.headers.authorization : ', req.headers.authorization);
   const authHeader = req.headers['authorization'];
 
   if (!authHeader) {
@@ -21,6 +22,8 @@ export function authenticationMiddleware(
     });
     return;
   }
+
+  console.log('TEST req.user : ', validateUserToken(token));
 
   req.user = validateUserToken(token);
   next();
