@@ -1,6 +1,6 @@
 import jwt, { JwtPayload } from 'jsonwebtoken';
-import { userTokenSchema } from '../validation/token.validation';
-import { UserTokenPayload } from '../types/user.type';
+import { userTokenSchema } from '@/validation/token.validation';
+import { UserTokenPayload } from '@/types';
 
 const JWT_SECRET = process.env.JWT_SECRET;
 

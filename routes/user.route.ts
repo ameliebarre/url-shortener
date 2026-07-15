@@ -1,13 +1,13 @@
 import express, { Request, Response } from 'express';
 import { z } from 'zod';
-import { usersTable } from '../models';
-import { hashPasswordWithSalt } from '../utils/hash';
-import { getUserByEmail, insertUser } from '../services/user.service';
+
+import { usersTable } from '@/models';
+import { getUserByEmail, insertUser } from '@/services';
 import {
   signupPostRequestBodySchema,
   loginPostRequestBodySchema,
-} from '../validation/request.validation';
-import { createUserToken } from '../utils/token';
+} from '@/validation';
+import { createUserToken, hashPasswordWithSalt } from '@/utils';
 
 const router = express.Router();
 

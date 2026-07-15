@@ -1,12 +1,12 @@
 import { Request, Response, NextFunction } from 'express';
-import { validateUserToken } from '../utils/token';
+
+import { validateUserToken } from '@/utils';
 
 export function authenticationMiddleware(
   req: Request,
   res: Response,
   next: NextFunction,
 ): void {
-  console.log('req.headers.authorization : ', req.headers.authorization);
   const authHeader = req.headers['authorization'];
 
   if (!authHeader) {
@@ -23,8 +23,20 @@ export function authenticationMiddleware(
     return;
   }
 
-  console.log('TEST req.user : ', validateUserToken(token));
-
   req.user = validateUserToken(token);
+  next();
+}
+
+export function ensureAuthenticated(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  if (!req.user || !req.user.id) {
+    return res
+      .status(401)
+      .json({ error: 'You must be logged in to access this ressource' });
+  }
+
   next();
 }

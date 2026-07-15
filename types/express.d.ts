@@ -1,5 +1,5 @@
 import 'express';
-import { UserPayload } from './user.type';
+import { UserPayload } from '@/types';
 
 declare global {
   namespace Express {
