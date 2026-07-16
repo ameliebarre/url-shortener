@@ -3,7 +3,12 @@ import { nanoid } from 'nanoid';
 import { z } from 'zod';
 
 import { ensureAuthenticated } from '@/middlewares';
-import { insertUrl, selectCodesFromUser, selectTargetUrl } from '@/services';
+import {
+  deleteUserURL,
+  insertUrl,
+  selectCodesFromUser,
+  selectTargetUrl,
+} from '@/services';
 import { shortenPostRequestBodySchema } from '@/validation';
 
 const router = express.Router();
@@ -46,6 +51,19 @@ router.get(
   async (req: Request, res: Response) => {
     const codes = await selectCodesFromUser(req.user.id);
     return res.json({ codes });
+  },
+);
+
+router.delete(
+  '/:id',
+  ensureAuthenticated,
+  async (req: Request, res: Response) => {
+    const urlId = req.params.id;
+    const userId = req.user.id;
+
+    await deleteUserURL(urlId, userId);
+
+    return res.status(200).json({ deleted: true });
   },
 );
 

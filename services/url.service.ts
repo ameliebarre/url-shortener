@@ -1,4 +1,4 @@
-import { eq } from 'drizzle-orm';
+import { eq, and } from 'drizzle-orm';
 
 import { db } from '@/db';
 import { urlsTable } from '@/models/url.model';
@@ -33,4 +33,10 @@ export async function selectTargetUrl(code: string) {
 
 export async function selectCodesFromUser(userId: string) {
   return db.select().from(urlsTable).where(eq(urlsTable.userId, userId));
+}
+
+export async function deleteUserURL(urlID: string, userId: string) {
+  return await db
+    .delete(urlsTable)
+    .where(and(eq(urlsTable.id, urlID), eq(urlsTable.userId, userId)));
 }
