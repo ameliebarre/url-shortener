@@ -3,7 +3,7 @@ import { nanoid } from 'nanoid';
 import { z } from 'zod';
 
 import { ensureAuthenticated } from '@/middlewares';
-import { insertUrl } from '@/services';
+import { insertUrl, selectTargetUrl } from '@/services';
 import { shortenPostRequestBodySchema } from '@/validation';
 
 const router = express.Router();
@@ -39,5 +39,17 @@ router.post(
     });
   },
 );
+
+router.get('/:shortcode', async (req: Request, res: Response) => {
+  const code = req.params.shortcode;
+
+  const result = await selectTargetUrl(code);
+
+  if (!result) {
+    return res.status(404).json({ error: 'Invalid URL' });
+  }
+
+  return res.redirect(result.targetUrl);
+});
 
 export default router;

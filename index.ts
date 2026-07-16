@@ -1,6 +1,7 @@
 import express, { Request, Response } from 'express';
-import { urlRouter, userRouter } from '@/routes';
+
 import { authenticationMiddleware } from '@/middlewares';
+import { urlRouter, userRouter } from '@/routes';
 
 const app = express();
 const PORT = process.env.PORT ?? 8000;
