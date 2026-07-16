@@ -30,3 +30,7 @@ export async function selectTargetUrl(code: string) {
 
   return result;
 }
+
+export async function selectCodesFromUser(userId: string) {
+  return db.select().from(urlsTable).where(eq(urlsTable.userId, userId));
+}

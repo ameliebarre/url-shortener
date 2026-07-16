@@ -3,7 +3,7 @@ import { nanoid } from 'nanoid';
 import { z } from 'zod';
 
 import { ensureAuthenticated } from '@/middlewares';
-import { insertUrl, selectTargetUrl } from '@/services';
+import { insertUrl, selectCodesFromUser, selectTargetUrl } from '@/services';
 import { shortenPostRequestBodySchema } from '@/validation';
 
 const router = express.Router();
@@ -37,6 +37,15 @@ router.post(
       shortcode: insertedShortcode,
       targetUrl: targetUrl,
     });
+  },
+);
+
+router.get(
+  '/codes',
+  ensureAuthenticated,
+  async (req: Request, res: Response) => {
+    const codes = await selectCodesFromUser(req.user.id);
+    return res.json({ codes });
   },
 );
 
