@@ -1,3 +1,4 @@
+import cors from 'cors';
 import express, { Request, Response } from 'express';
 
 import { authenticationMiddleware } from '@/middlewares';
@@ -5,7 +6,9 @@ import { urlRouter, userRouter } from '@/routes';
 
 const app = express();
 const PORT = process.env.PORT ?? 8000;
+const FRONTEND_URL = process.env.FRONTEND_URL ?? 'http://localhost:5173';
 
+app.use(cors({ origin: FRONTEND_URL }));
 app.use(express.json());
 app.use(authenticationMiddleware);
 
