@@ -4,7 +4,12 @@ import { z } from 'zod';
 
 import { usersTable } from '@/models';
 import { getUserByEmail, insertUser } from '@/services';
-import { asyncHandler, createUserToken, hashPasswordWithSalt } from '@/utils';
+import {
+  asyncHandler,
+  createUserToken,
+  hashPassword,
+  verifyPassword,
+} from '@/utils';
 import {
   signupPostRequestBodySchema,
   loginPostRequestBodySchema,
@@ -44,14 +49,13 @@ router.post(
           .status(400)
           .json({ error: `User with email ${email} already exists.` });
 
-      const { salt, hashedPassword } = hashPasswordWithSalt(password);
+      const hashedPassword = await hashPassword(password);
 
       const user = await insertUser(
         firstname,
         lastname,
         email,
         hashedPassword,
-        salt,
       );
 
       return res.status(201).json({ data: { userId: user.id } });
@@ -85,9 +89,9 @@ router.post(
           .json({ error: `User with email ${email} does not exist.` });
       }
 
-      const { hashedPassword } = hashPasswordWithSalt(password, user.salt);
+      const isPasswordValid = await verifyPassword(password, user.password);
 
-      if (user.password !== hashedPassword) {
+      if (!isPasswordValid) {
         return res.status(400).json({ error: `Invalid password.` });
       }
 

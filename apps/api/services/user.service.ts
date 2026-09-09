@@ -11,7 +11,6 @@ export async function getUserByEmail(email: string) {
       lastname: usersTable.lastname,
       email: usersTable.email,
       password: usersTable.password,
-      salt: usersTable.salt,
     })
     .from(usersTable)
     .where(eq(usersTable.email, email));
@@ -24,7 +23,6 @@ export async function insertUser(
   lastname: string,
   email: string,
   password: string,
-  salt: string,
 ) {
   const [user] = await db
     .insert(usersTable)
@@ -33,7 +31,6 @@ export async function insertUser(
       lastname,
       email,
       password,
-      salt,
     })
     .returning({ id: usersTable.id });
 

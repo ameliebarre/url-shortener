@@ -4,7 +4,11 @@ export const signupPostRequestBodySchema = z.object({
   firstname: z.string(),
   lastname: z.string(),
   email: z.email(),
-  password: z.string().min(3),
+  password: z
+    .string()
+    .min(8, 'Password must be at least 8 characters long.')
+    .regex(/[a-zA-Z]/, 'Password must contain at least one letter.')
+    .regex(/[0-9]/, 'Password must contain at least one number.'),
 });
 
 export const loginPostRequestBodySchema = z.object({

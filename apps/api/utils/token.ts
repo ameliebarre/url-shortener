@@ -5,6 +5,9 @@ import { UserTokenPayload } from '@/types';
 import { userTokenSchema } from '@/validation';
 
 const JWT_SECRET = process.env.JWT_SECRET;
+const TWO_HOURS_IN_SECONDS = 60 * 60 * 2;
+const JWT_EXPIRES_IN_SECONDS =
+  Number(process.env.JWT_EXPIRES_IN_SECONDS) || TWO_HOURS_IN_SECONDS;
 
 export function isUserTokenPayload(
   payload: unknown,
@@ -21,7 +24,9 @@ export async function createUserToken(
 
   const payloadValidated = await userTokenSchema.parseAsync(payload);
 
-  return jwt.sign(payloadValidated, JWT_SECRET);
+  return jwt.sign(payloadValidated, JWT_SECRET, {
+    expiresIn: JWT_EXPIRES_IN_SECONDS,
+  });
 }
 
 export function validateUserToken(token: string): UserTokenPayload | null {

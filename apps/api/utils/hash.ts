@@ -1,18 +1,14 @@
-import { randomBytes, createHmac } from 'crypto';
+import bcrypt from 'bcryptjs';
 
-export interface HashedPassword {
-  salt: string;
-  hashedPassword: string;
+const SALT_ROUNDS = 10;
+
+export function hashPassword(password: string): Promise<string> {
+  return bcrypt.hash(password, SALT_ROUNDS);
 }
 
-export function hashPasswordWithSalt(
+export function verifyPassword(
   password: string,
-  userSalt?: string,
-): HashedPassword {
-  const salt = userSalt ?? randomBytes(256).toString('hex');
-  const hashedPassword = createHmac('sha256', salt)
-    .update(password)
-    .digest('hex');
-
-  return { salt, hashedPassword };
+  hash: string,
+): Promise<boolean> {
+  return bcrypt.compare(password, hash);
 }
