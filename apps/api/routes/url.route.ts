@@ -9,6 +9,7 @@ import {
   selectCodesFromUser,
   selectTargetUrl,
 } from '@/services';
+import { asyncHandler } from '@/utils';
 import { shortenPostRequestBodySchema } from '@/validation';
 
 const router = express.Router();
@@ -16,7 +17,7 @@ const router = express.Router();
 router.post(
   '/shorten',
   ensureAuthenticated,
-  async (req: Request, res: Response) => {
+  asyncHandler(async (req: Request, res: Response) => {
     const validationResult = await shortenPostRequestBodySchema.safeParseAsync(
       req.body,
     );
@@ -42,41 +43,44 @@ router.post(
       shortcode: insertedShortcode,
       targetUrl: targetUrl,
     });
-  },
+  }),
 );
 
 router.get(
   '/codes',
   ensureAuthenticated,
-  async (req: Request, res: Response) => {
+  asyncHandler(async (req: Request, res: Response) => {
     const codes = await selectCodesFromUser(req.user.id);
     return res.json({ codes });
-  },
+  }),
 );
 
 router.delete(
   '/:id',
   ensureAuthenticated,
-  async (req: Request, res: Response) => {
+  asyncHandler(async (req: Request, res: Response) => {
     const urlId = req.params.id;
     const userId = req.user.id;
 
     await deleteUserURL(urlId, userId);
 
     return res.status(200).json({ deleted: true });
-  },
+  }),
 );
 
-router.get('/:shortcode', async (req: Request, res: Response) => {
-  const code = req.params.shortcode;
+router.get(
+  '/:shortcode',
+  asyncHandler(async (req: Request, res: Response) => {
+    const code = req.params.shortcode;
 
-  const result = await selectTargetUrl(code);
+    const result = await selectTargetUrl(code);
 
-  if (!result) {
-    return res.status(404).json({ error: 'Invalid URL' });
-  }
+    if (!result) {
+      return res.status(404).json({ error: 'Invalid URL' });
+    }
 
-  return res.redirect(result.targetUrl);
-});
+    return res.redirect(result.targetUrl);
+  }),
+);
 
 export default router;

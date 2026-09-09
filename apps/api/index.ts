@@ -1,7 +1,7 @@
 import cors from 'cors';
 import express, { Request, Response } from 'express';
 
-import { authenticationMiddleware } from '@/middlewares';
+import { authenticationMiddleware, errorMiddleware } from '@/middlewares';
 import { urlRouter, userRouter } from '@/routes';
 
 const app = express();
@@ -18,5 +18,7 @@ app.get('/', (req: Request, res: Response) => {
 
 app.use('/auth', userRouter);
 app.use(urlRouter);
+
+app.use(errorMiddleware);
 
 app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));

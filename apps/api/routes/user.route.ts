@@ -1,9 +1,10 @@
 import express, { Request, Response } from 'express';
+import { ParamsDictionary } from 'express-serve-static-core';
 import { z } from 'zod';
 
 import { usersTable } from '@/models';
 import { getUserByEmail, insertUser } from '@/services';
-import { createUserToken, hashPasswordWithSalt } from '@/utils';
+import { asyncHandler, createUserToken, hashPasswordWithSalt } from '@/utils';
 import {
   signupPostRequestBodySchema,
   loginPostRequestBodySchema,
@@ -20,73 +21,81 @@ type LoginBody = Pick<typeof usersTable.$inferInsert, 'email' | 'password'>;
 
 router.post(
   '/signup',
-  async (req: Request<never, never, SignupBody>, res: Response) => {
-    const validationResult = await signupPostRequestBodySchema.safeParseAsync(
-      req.body,
-    );
+  asyncHandler(
+    async (
+      req: Request<ParamsDictionary, unknown, SignupBody>,
+      res: Response,
+    ) => {
+      const validationResult =
+        await signupPostRequestBodySchema.safeParseAsync(req.body);
 
-    if (validationResult.error) {
-      return res
-        .status(400)
-        .json({ error: z.flattenError(validationResult.error) });
-    }
+      if (validationResult.error) {
+        return res
+          .status(400)
+          .json({ error: z.flattenError(validationResult.error) });
+      }
 
-    const { firstname, lastname, email, password } = validationResult.data;
+      const { firstname, lastname, email, password } = validationResult.data;
 
-    const existingUser = await getUserByEmail(email);
+      const existingUser = await getUserByEmail(email);
 
-    if (existingUser)
-      return res
-        .status(400)
-        .json({ error: `User with email ${email} already exists.` });
+      if (existingUser)
+        return res
+          .status(400)
+          .json({ error: `User with email ${email} already exists.` });
 
-    const { salt, hashedPassword } = hashPasswordWithSalt(password);
+      const { salt, hashedPassword } = hashPasswordWithSalt(password);
 
-    const user = await insertUser(
-      firstname,
-      lastname,
-      email,
-      hashedPassword,
-      salt,
-    );
+      const user = await insertUser(
+        firstname,
+        lastname,
+        email,
+        hashedPassword,
+        salt,
+      );
 
-    return res.status(201).json({ data: { userId: user.id } });
-  },
+      return res.status(201).json({ data: { userId: user.id } });
+    },
+  ),
 );
 
 router.post(
   '/login',
-  async (req: Request<never, never, LoginBody>, res: Response) => {
-    const validationResult = await loginPostRequestBodySchema.safeParseAsync(
-      req.body,
-    );
+  asyncHandler(
+    async (
+      req: Request<ParamsDictionary, unknown, LoginBody>,
+      res: Response,
+    ) => {
+      const validationResult =
+        await loginPostRequestBodySchema.safeParseAsync(req.body);
 
-    if (validationResult.error) {
-      return res
-        .status(400)
-        .json({ error: z.flattenError(validationResult.error) });
-    }
+      if (validationResult.error) {
+        return res
+          .status(400)
+          .json({ error: z.flattenError(validationResult.error) });
+      }
 
-    const { email, password } = validationResult.data;
+      const { email, password } = validationResult.data;
 
-    const user = await getUserByEmail(email);
+      const user = await getUserByEmail(email);
 
-    if (!user) {
-      return res
-        .status(404)
-        .json({ error: `User with email ${email} does not exist.` });
-    }
+      if (!user) {
+        return res
+          .status(404)
+          .json({ error: `User with email ${email} does not exist.` });
+      }
 
-    const { hashedPassword } = hashPasswordWithSalt(password, user.salt);
+      const { hashedPassword } = hashPasswordWithSalt(password, user.salt);
 
-    if (user.password !== hashedPassword) {
-      return res.status(400).json({ error: `Invalid password.` });
-    }
+      if (user.password !== hashedPassword) {
+        return res.status(400).json({ error: `Invalid password.` });
+      }
 
-    const token = await createUserToken({ id: user.id });
+      const token = await createUserToken({ id: user.id });
 
-    return res.json({ token });
-  },
+      return res.json({ token });
+    },
+  ),
 );
 
 export default router;
