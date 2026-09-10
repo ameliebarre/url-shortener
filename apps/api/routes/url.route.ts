@@ -2,7 +2,11 @@ import express, { Request, Response } from 'express';
 import { nanoid } from 'nanoid';
 import { z } from 'zod';
 
-import { ensureAuthenticated } from '@/middlewares';
+import {
+  ensureAuthenticated,
+  redirectRateLimiter,
+  shortenRateLimiter,
+} from '@/middlewares';
 import {
   deleteUserURL,
   insertUrl,
@@ -17,6 +21,7 @@ const router = express.Router();
 router.post(
   '/shorten',
   ensureAuthenticated,
+  shortenRateLimiter,
   asyncHandler(async (req: Request, res: Response) => {
     const validationResult = await shortenPostRequestBodySchema.safeParseAsync(
       req.body,
@@ -72,6 +77,7 @@ router.delete(
 
 router.get(
   '/:shortcode',
+  redirectRateLimiter,
   asyncHandler(async (req: Request, res: Response) => {
     const code = req.params.shortcode;
 

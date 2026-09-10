@@ -3,4 +3,8 @@ export {
   ensureAuthenticated,
 } from './auth.middleware';
 export { errorMiddleware } from './error.middleware';
-export { authRateLimiter } from './rate-limit.middleware';
+export {
+  authRateLimiter,
+  redirectRateLimiter,
+  shortenRateLimiter,
+} from './rate-limit.middleware';
