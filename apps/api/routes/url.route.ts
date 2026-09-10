@@ -11,12 +11,14 @@ import {
   insertUrl,
   selectCodesFromUser,
   selectTargetUrl,
+  updateUserURL,
 } from '@/services';
 import { asyncHandler } from '@/utils';
 import {
   codesQuerySchema,
-  deleteUrlParamsSchema,
   shortenPostRequestBodySchema,
+  updateUrlBodySchema,
+  urlIdParamsSchema,
 } from '@/validation';
 
 const router = express.Router();
@@ -85,11 +87,45 @@ router.get(
   }),
 );
 
+router.patch(
+  '/:id',
+  ensureAuthenticated,
+  asyncHandler(async (req: Request, res: Response) => {
+    const paramsResult = urlIdParamsSchema.safeParse(req.params);
+
+    if (paramsResult.error) {
+      return res
+        .status(400)
+        .json({ error: z.flattenError(paramsResult.error) });
+    }
+
+    const bodyResult = await updateUrlBodySchema.safeParseAsync(req.body);
+
+    if (bodyResult.error) {
+      return res.status(400).json({ error: z.flattenError(bodyResult.error) });
+    }
+
+    const { id: urlId } = paramsResult.data;
+
+    const updatedUrl = await updateUserURL(
+      urlId,
+      req.user!.id,
+      bodyResult.data,
+    );
+
+    if (!updatedUrl) {
+      return res.status(404).json({ error: 'URL not found' });
+    }
+
+    return res.json(updatedUrl);
+  }),
+);
+
 router.delete(
   '/:id',
   ensureAuthenticated,
   asyncHandler(async (req: Request, res: Response) => {
-    const validationResult = deleteUrlParamsSchema.safeParse(req.params);
+    const validationResult = urlIdParamsSchema.safeParse(req.params);
 
     if (validationResult.error) {
       return res

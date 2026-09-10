@@ -78,6 +78,31 @@ export async function selectCodesFromUser(
   return { codes, total };
 }
 
+export async function updateUserURL(
+  urlID: string,
+  userId: string,
+  updates: { url?: string; code?: string; expiresAt?: Date | null },
+) {
+  const { url, code, expiresAt } = updates;
+
+  const [result] = await db
+    .update(urlsTable)
+    .set({
+      ...(url !== undefined && { targetUrl: url }),
+      ...(code !== undefined && { shortcode: code }),
+      ...(expiresAt !== undefined && { expiresAt }),
+    })
+    .where(and(eq(urlsTable.id, urlID), eq(urlsTable.userId, userId)))
+    .returning({
+      id: urlsTable.id,
+      shortcode: urlsTable.shortcode,
+      targetUrl: urlsTable.targetUrl,
+      expiresAt: urlsTable.expiresAt,
+    });
+
+  return result;
+}
+
 export async function deleteUserURL(urlID: string, userId: string) {
   const [result] = await db
     .delete(urlsTable)

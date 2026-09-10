@@ -2,7 +2,8 @@ export {
   signupPostRequestBodySchema,
   loginPostRequestBodySchema,
   shortenPostRequestBodySchema,
-  deleteUrlParamsSchema,
+  updateUrlBodySchema,
+  urlIdParamsSchema,
   codesQuerySchema,
 } from './request.validation';
 export { userTokenSchema } from './token.validation';

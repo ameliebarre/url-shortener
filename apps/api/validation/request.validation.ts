@@ -16,7 +16,7 @@ export const loginPostRequestBodySchema = z.object({
   password: z.string().min(3),
 });
 
-export const deleteUrlParamsSchema = z.object({
+export const urlIdParamsSchema = z.object({
   id: z.uuid(),
 });
 
@@ -25,13 +25,22 @@ export const codesQuerySchema = z.object({
   pageSize: z.coerce.number().int().min(1).max(100).default(20),
 });
 
+const futureExpiresAt = z.coerce.date().refine((date) => date > new Date(), {
+  message: 'expiresAt must be in the future.',
+});
+
 export const shortenPostRequestBodySchema = z.object({
   url: z.url(),
   code: z.string().optional(),
-  expiresAt: z.coerce
-    .date()
-    .refine((date) => date > new Date(), {
-      message: 'expiresAt must be in the future.',
-    })
-    .optional(),
+  expiresAt: futureExpiresAt.optional(),
 });
+
+export const updateUrlBodySchema = z
+  .object({
+    url: z.url().optional(),
+    code: z.string().optional(),
+    expiresAt: z.union([futureExpiresAt, z.null()]).optional(),
+  })
+  .refine((data) => Object.keys(data).length > 0, {
+    message: 'At least one field must be provided.',
+  });
