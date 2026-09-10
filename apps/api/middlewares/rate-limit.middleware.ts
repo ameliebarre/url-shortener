@@ -1,11 +1,17 @@
 import rateLimit from 'express-rate-limit';
 
+import { errorBody } from '@/utils';
+
+const rateLimitMessage = errorBody(
+  'Too many requests, please try again later.',
+);
+
 export const authRateLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   limit: 20,
   standardHeaders: true,
   legacyHeaders: false,
-  message: { error: 'Too many requests, please try again later.' },
+  message: rateLimitMessage,
 });
 
 export const shortenRateLimiter = rateLimit({
@@ -13,7 +19,7 @@ export const shortenRateLimiter = rateLimit({
   limit: 30,
   standardHeaders: true,
   legacyHeaders: false,
-  message: { error: 'Too many requests, please try again later.' },
+  message: rateLimitMessage,
 });
 
 export const redirectRateLimiter = rateLimit({
@@ -21,5 +27,5 @@ export const redirectRateLimiter = rateLimit({
   limit: 100,
   standardHeaders: true,
   legacyHeaders: false,
-  message: { error: 'Too many requests, please try again later.' },
+  message: rateLimitMessage,
 });

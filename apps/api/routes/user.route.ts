@@ -1,6 +1,5 @@
 import express, { Request, Response } from 'express';
 import { ParamsDictionary } from 'express-serve-static-core';
-import { z } from 'zod';
 
 import { ensureAuthenticated } from '@/middlewares';
 import { usersTable } from '@/models';
@@ -13,7 +12,9 @@ import {
 import {
   asyncHandler,
   createUserToken,
+  errorBody,
   hashPassword,
+  validationErrorBody,
   verifyPassword,
 } from '@/utils';
 import {
@@ -43,7 +44,7 @@ router.post(
       if (validationResult.error) {
         return res
           .status(400)
-          .json({ error: z.flattenError(validationResult.error) });
+          .json(validationErrorBody(validationResult.error));
       }
 
       const { firstname, lastname, email, password } = validationResult.data;
@@ -53,7 +54,7 @@ router.post(
       if (existingUser)
         return res
           .status(400)
-          .json({ error: `User with email ${email} already exists.` });
+          .json(errorBody(`User with email ${email} already exists.`));
 
       const hashedPassword = await hashPassword(password);
 
@@ -82,7 +83,7 @@ router.post(
       if (validationResult.error) {
         return res
           .status(400)
-          .json({ error: z.flattenError(validationResult.error) });
+          .json(validationErrorBody(validationResult.error));
       }
 
       const { email, password } = validationResult.data;
@@ -92,13 +93,13 @@ router.post(
       if (!user) {
         return res
           .status(404)
-          .json({ error: `User with email ${email} does not exist.` });
+          .json(errorBody(`User with email ${email} does not exist.`));
       }
 
       const isPasswordValid = await verifyPassword(password, user.password);
 
       if (!isPasswordValid) {
-        return res.status(400).json({ error: `Invalid password.` });
+        return res.status(400).json(errorBody('Invalid password.'));
       }
 
       const token = await createUserToken({ id: user.id });
@@ -115,7 +116,7 @@ router.get(
     const user = await getUserById(req.user!.id);
 
     if (!user) {
-      return res.status(404).json({ error: 'User not found' });
+      return res.status(404).json(errorBody('User not found'));
     }
 
     return res.json(user);

@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 
-import { validateUserToken } from '@/utils';
+import { errorBody, validateUserToken } from '@/utils';
 
 export async function authenticationMiddleware(
   req: Request,
@@ -17,9 +17,7 @@ export async function authenticationMiddleware(
   const [scheme, token] = authHeader.split(' '); // [Bearer, <TOKEN>]
 
   if (scheme !== 'Bearer' || !token) {
-    res.status(400).json({
-      error: 'Invalid Authorization header.',
-    });
+    res.status(400).json(errorBody('Invalid Authorization header.'));
     return;
   }
 
@@ -35,7 +33,7 @@ export function ensureAuthenticated(
   if (!req.user || !req.user.id) {
     return res
       .status(401)
-      .json({ error: 'You must be logged in to access this ressource' });
+      .json(errorBody('You must be logged in to access this ressource'));
   }
 
   next();

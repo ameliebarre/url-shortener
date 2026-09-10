@@ -1,5 +1,4 @@
 import express, { Request, Response } from 'express';
-import { z } from 'zod';
 
 import {
   ensureAuthenticated,
@@ -13,7 +12,7 @@ import {
   selectTargetUrl,
   updateUserURL,
 } from '@/services';
-import { asyncHandler } from '@/utils';
+import { asyncHandler, errorBody, validationErrorBody } from '@/utils';
 import {
   codesQuerySchema,
   shortenPostRequestBodySchema,
@@ -35,7 +34,7 @@ router.post(
     if (validationResult.error) {
       return res
         .status(400)
-        .json({ error: z.flattenError(validationResult.error) });
+        .json(validationErrorBody(validationResult.error));
     }
 
     const { url, code, expiresAt } = validationResult.data;
@@ -65,7 +64,7 @@ router.get(
     if (validationResult.error) {
       return res
         .status(400)
-        .json({ error: z.flattenError(validationResult.error) });
+        .json(validationErrorBody(validationResult.error));
     }
 
     const { page, pageSize } = validationResult.data;
@@ -94,15 +93,13 @@ router.patch(
     const paramsResult = urlIdParamsSchema.safeParse(req.params);
 
     if (paramsResult.error) {
-      return res
-        .status(400)
-        .json({ error: z.flattenError(paramsResult.error) });
+      return res.status(400).json(validationErrorBody(paramsResult.error));
     }
 
     const bodyResult = await updateUrlBodySchema.safeParseAsync(req.body);
 
     if (bodyResult.error) {
-      return res.status(400).json({ error: z.flattenError(bodyResult.error) });
+      return res.status(400).json(validationErrorBody(bodyResult.error));
     }
 
     const { id: urlId } = paramsResult.data;
@@ -114,7 +111,7 @@ router.patch(
     );
 
     if (!updatedUrl) {
-      return res.status(404).json({ error: 'URL not found' });
+      return res.status(404).json(errorBody('URL not found'));
     }
 
     return res.json(updatedUrl);
@@ -130,7 +127,7 @@ router.delete(
     if (validationResult.error) {
       return res
         .status(400)
-        .json({ error: z.flattenError(validationResult.error) });
+        .json(validationErrorBody(validationResult.error));
     }
 
     const { id: urlId } = validationResult.data;
@@ -139,7 +136,7 @@ router.delete(
     const deletedUrl = await deleteUserURL(urlId, userId);
 
     if (!deletedUrl) {
-      return res.status(404).json({ error: 'URL not found' });
+      return res.status(404).json(errorBody('URL not found'));
     }
 
     return res.status(200).json({ deleted: true });
@@ -155,7 +152,7 @@ router.get(
     const result = await selectTargetUrl(code);
 
     if (!result) {
-      return res.status(404).json({ error: 'Invalid URL' });
+      return res.status(404).json(errorBody('Invalid URL'));
     }
 
     return res.redirect(result.targetUrl);
