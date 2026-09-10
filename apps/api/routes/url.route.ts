@@ -39,7 +39,7 @@ router.post(
       shortcode: insertedShortcode,
       targetUrl,
       expiresAt: insertedExpiresAt,
-    } = await insertUrl(code, url, req.user.id, expiresAt);
+    } = await insertUrl(code, url, req.user!.id, expiresAt);
 
     return res.status(201).json({
       id: id,
@@ -54,7 +54,7 @@ router.get(
   '/codes',
   ensureAuthenticated,
   asyncHandler(async (req: Request, res: Response) => {
-    const codes = await selectCodesFromUser(req.user.id);
+    const codes = await selectCodesFromUser(req.user!.id);
     return res.json({ codes });
   }),
 );
@@ -64,7 +64,7 @@ router.delete(
   ensureAuthenticated,
   asyncHandler(async (req: Request, res: Response) => {
     const urlId = req.params.id;
-    const userId = req.user.id;
+    const userId = req.user!.id;
 
     await deleteUserURL(urlId, userId);
 

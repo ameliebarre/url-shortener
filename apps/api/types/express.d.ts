@@ -1,10 +1,10 @@
 import 'express';
-import { UserPayload } from '@/types';
+import { DecodedUserToken } from '@/types';
 
 declare global {
   namespace Express {
     interface Request {
-      user: UserPayload | null;
+      user: DecodedUserToken | null;
     }
   }
 }

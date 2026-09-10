@@ -2,8 +2,9 @@ import express, { Request, Response } from 'express';
 import { ParamsDictionary } from 'express-serve-static-core';
 import { z } from 'zod';
 
+import { ensureAuthenticated } from '@/middlewares';
 import { usersTable } from '@/models';
-import { getUserByEmail, insertUser } from '@/services';
+import { getUserByEmail, insertUser, revokeToken } from '@/services';
 import {
   asyncHandler,
   createUserToken,
@@ -100,6 +101,18 @@ router.post(
       return res.json({ token });
     },
   ),
+);
+
+router.post(
+  '/logout',
+  ensureAuthenticated,
+  asyncHandler(async (req: Request, res: Response) => {
+    const { jti, exp } = req.user!;
+
+    await revokeToken(jti, new Date(exp * 1000));
+
+    return res.status(200).json({ loggedOut: true });
+  }),
 );
 
 export default router;

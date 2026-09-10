@@ -1,1 +1,1 @@
-export { UserTokenPayload } from './user.type';
+export { UserTokenPayload, DecodedUserToken } from './user.type';

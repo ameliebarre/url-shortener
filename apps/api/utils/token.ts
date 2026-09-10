@@ -1,7 +1,10 @@
+import { randomUUID } from 'node:crypto';
+
 import 'dotenv/config';
 import jwt from 'jsonwebtoken';
 
-import { UserTokenPayload } from '@/types';
+import { isTokenRevoked } from '@/services';
+import { DecodedUserToken, UserTokenPayload } from '@/types';
 import { userTokenSchema } from '@/validation';
 
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -15,6 +18,14 @@ export function isUserTokenPayload(
   return typeof payload === 'object' && payload !== null && 'id' in payload;
 }
 
+function isDecodedUserToken(payload: unknown): payload is DecodedUserToken {
+  return (
+    isUserTokenPayload(payload) &&
+    typeof (payload as DecodedUserToken).jti === 'string' &&
+    typeof (payload as DecodedUserToken).exp === 'number'
+  );
+}
+
 export async function createUserToken(
   payload: UserTokenPayload,
 ): Promise<string> {
@@ -26,14 +37,21 @@ export async function createUserToken(
 
   return jwt.sign(payloadValidated, JWT_SECRET, {
     expiresIn: JWT_EXPIRES_IN_SECONDS,
+    jwtid: randomUUID(),
   });
 }
 
-export function validateUserToken(token: string): UserTokenPayload | null {
+export async function validateUserToken(
+  token: string,
+): Promise<DecodedUserToken | null> {
   try {
     const payload = jwt.verify(token, JWT_SECRET!);
 
-    if (!isUserTokenPayload(payload)) {
+    if (!isDecodedUserToken(payload)) {
+      return null;
+    }
+
+    if (await isTokenRevoked(payload.jti)) {
       return null;
     }
 

@@ -2,11 +2,11 @@ import { Request, Response, NextFunction } from 'express';
 
 import { validateUserToken } from '@/utils';
 
-export function authenticationMiddleware(
+export async function authenticationMiddleware(
   req: Request,
   res: Response,
   next: NextFunction,
-): void {
+): Promise<void> {
   const authHeader = req.headers['authorization'];
 
   if (!authHeader) {
@@ -23,7 +23,7 @@ export function authenticationMiddleware(
     return;
   }
 
-  req.user = validateUserToken(token);
+  req.user = await validateUserToken(token);
   next();
 }
 

@@ -5,3 +5,4 @@ export {
   selectCodesFromUser,
   deleteUserURL,
 } from './url.service';
+export { revokeToken, isTokenRevoked } from './revoked-token.service';
