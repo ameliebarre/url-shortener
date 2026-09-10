@@ -2,6 +2,7 @@ import cors from 'cors';
 import express, { Request, Response } from 'express';
 import helmet from 'helmet';
 
+import { env } from '@/env';
 import {
   authenticationMiddleware,
   authRateLimiter,
@@ -11,11 +12,9 @@ import { urlRouter, userRouter } from '@/routes';
 import { asyncHandler } from '@/utils';
 
 const app = express();
-const PORT = process.env.PORT ?? 8000;
-const FRONTEND_URL = process.env.FRONTEND_URL ?? 'http://localhost:5173';
 
 app.use(helmet());
-app.use(cors({ origin: FRONTEND_URL }));
+app.use(cors({ origin: env.FRONTEND_URL }));
 app.use(express.json());
 app.use(asyncHandler(authenticationMiddleware));
 
@@ -28,4 +27,6 @@ app.use(urlRouter);
 
 app.use(errorMiddleware);
 
-app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));
+app.listen(env.PORT, () =>
+  console.log(`Server is running on port ${env.PORT}`),
+);
