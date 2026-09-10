@@ -19,4 +19,10 @@ export const loginPostRequestBodySchema = z.object({
 export const shortenPostRequestBodySchema = z.object({
   url: z.url(),
   code: z.string().optional(),
+  expiresAt: z.coerce
+    .date()
+    .refine((date) => date > new Date(), {
+      message: 'expiresAt must be in the future.',
+    })
+    .optional(),
 });

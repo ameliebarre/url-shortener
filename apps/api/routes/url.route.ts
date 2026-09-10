@@ -28,7 +28,7 @@ router.post(
         .json({ error: z.flattenError(validationResult.error) });
     }
 
-    const { url, code } = validationResult.data;
+    const { url, code, expiresAt } = validationResult.data;
 
     const shortcode = code ?? nanoid(6);
 
@@ -36,12 +36,14 @@ router.post(
       id,
       shortcode: insertedShortcode,
       targetUrl,
-    } = await insertUrl(shortcode, url, req.user.id);
+      expiresAt: insertedExpiresAt,
+    } = await insertUrl(shortcode, url, req.user.id, expiresAt);
 
     return res.status(201).json({
       id: id,
       shortcode: insertedShortcode,
       targetUrl: targetUrl,
+      expiresAt: insertedExpiresAt,
     });
   }),
 );

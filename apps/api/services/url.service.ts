@@ -1,4 +1,4 @@
-import { eq, and } from 'drizzle-orm';
+import { eq, and, or, isNull, gt } from 'drizzle-orm';
 
 import { db } from '@/db';
 import { urlsTable } from '@/models/url.model';
@@ -7,14 +7,16 @@ export async function insertUrl(
   shortcode: string,
   url: string,
   userId: string,
+  expiresAt?: Date,
 ) {
   const [result] = await db
     .insert(urlsTable)
-    .values({ shortcode, targetUrl: url, userId })
+    .values({ shortcode, targetUrl: url, userId, expiresAt })
     .returning({
       id: urlsTable.id,
       shortcode: urlsTable.shortcode,
       targetUrl: urlsTable.targetUrl,
+      expiresAt: urlsTable.expiresAt,
     });
 
   return result;
@@ -26,7 +28,12 @@ export async function selectTargetUrl(code: string) {
       targetUrl: urlsTable.targetUrl,
     })
     .from(urlsTable)
-    .where(eq(urlsTable.shortcode, code));
+    .where(
+      and(
+        eq(urlsTable.shortcode, code),
+        or(isNull(urlsTable.expiresAt), gt(urlsTable.expiresAt, new Date())),
+      ),
+    );
 
   return result;
 }

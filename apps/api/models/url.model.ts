@@ -12,4 +12,5 @@ export const urlsTable = pgTable('url', {
 
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').$onUpdate(() => new Date()),
+  expiresAt: timestamp('expires_at'),
 });
