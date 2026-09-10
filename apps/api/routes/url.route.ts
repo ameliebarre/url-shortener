@@ -14,6 +14,7 @@ import {
 } from '@/services';
 import { asyncHandler } from '@/utils';
 import {
+  codesQuerySchema,
   deleteUrlParamsSchema,
   shortenPostRequestBodySchema,
 } from '@/validation';
@@ -57,8 +58,30 @@ router.get(
   '/codes',
   ensureAuthenticated,
   asyncHandler(async (req: Request, res: Response) => {
-    const codes = await selectCodesFromUser(req.user!.id);
-    return res.json({ codes });
+    const validationResult = codesQuerySchema.safeParse(req.query);
+
+    if (validationResult.error) {
+      return res
+        .status(400)
+        .json({ error: z.flattenError(validationResult.error) });
+    }
+
+    const { page, pageSize } = validationResult.data;
+
+    const { codes, total } = await selectCodesFromUser(req.user!.id, {
+      page,
+      pageSize,
+    });
+
+    return res.json({
+      codes,
+      pagination: {
+        page,
+        pageSize,
+        total,
+        totalPages: Math.ceil(total / pageSize),
+      },
+    });
   }),
 );
 

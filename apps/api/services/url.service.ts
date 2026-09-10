@@ -1,4 +1,4 @@
-import { eq, and, or, isNull, gt } from 'drizzle-orm';
+import { eq, and, or, isNull, gt, desc, count } from 'drizzle-orm';
 import { nanoid } from 'nanoid';
 
 import { db } from '@/db';
@@ -57,8 +57,25 @@ export async function selectTargetUrl(code: string) {
   return result;
 }
 
-export async function selectCodesFromUser(userId: string) {
-  return db.select().from(urlsTable).where(eq(urlsTable.userId, userId));
+export async function selectCodesFromUser(
+  userId: string,
+  { page, pageSize }: { page: number; pageSize: number },
+) {
+  const [codes, [{ total }]] = await Promise.all([
+    db
+      .select()
+      .from(urlsTable)
+      .where(eq(urlsTable.userId, userId))
+      .orderBy(desc(urlsTable.createdAt))
+      .limit(pageSize)
+      .offset((page - 1) * pageSize),
+    db
+      .select({ total: count() })
+      .from(urlsTable)
+      .where(eq(urlsTable.userId, userId)),
+  ]);
+
+  return { codes, total };
 }
 
 export async function deleteUserURL(urlID: string, userId: string) {
