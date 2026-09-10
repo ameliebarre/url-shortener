@@ -16,6 +16,10 @@ export const loginPostRequestBodySchema = z.object({
   password: z.string().min(3),
 });
 
+export const deleteUrlParamsSchema = z.object({
+  id: z.uuid(),
+});
+
 export const shortenPostRequestBodySchema = z.object({
   url: z.url(),
   code: z.string().optional(),

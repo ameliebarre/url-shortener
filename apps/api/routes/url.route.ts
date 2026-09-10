@@ -13,7 +13,10 @@ import {
   selectTargetUrl,
 } from '@/services';
 import { asyncHandler } from '@/utils';
-import { shortenPostRequestBodySchema } from '@/validation';
+import {
+  deleteUrlParamsSchema,
+  shortenPostRequestBodySchema,
+} from '@/validation';
 
 const router = express.Router();
 
@@ -63,10 +66,22 @@ router.delete(
   '/:id',
   ensureAuthenticated,
   asyncHandler(async (req: Request, res: Response) => {
-    const urlId = req.params.id;
+    const validationResult = deleteUrlParamsSchema.safeParse(req.params);
+
+    if (validationResult.error) {
+      return res
+        .status(400)
+        .json({ error: z.flattenError(validationResult.error) });
+    }
+
+    const { id: urlId } = validationResult.data;
     const userId = req.user!.id;
 
-    await deleteUserURL(urlId, userId);
+    const deletedUrl = await deleteUserURL(urlId, userId);
+
+    if (!deletedUrl) {
+      return res.status(404).json({ error: 'URL not found' });
+    }
 
     return res.status(200).json({ deleted: true });
   }),

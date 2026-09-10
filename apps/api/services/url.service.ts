@@ -62,7 +62,10 @@ export async function selectCodesFromUser(userId: string) {
 }
 
 export async function deleteUserURL(urlID: string, userId: string) {
-  return await db
+  const [result] = await db
     .delete(urlsTable)
-    .where(and(eq(urlsTable.id, urlID), eq(urlsTable.userId, userId)));
+    .where(and(eq(urlsTable.id, urlID), eq(urlsTable.userId, userId)))
+    .returning({ id: urlsTable.id });
+
+  return result;
 }
