@@ -1,25 +1,44 @@
 import { eq, and, or, isNull, gt } from 'drizzle-orm';
+import { nanoid } from 'nanoid';
 
 import { db } from '@/db';
 import { urlsTable } from '@/models/url.model';
+import { isUniqueConstraintError } from '@/utils';
+
+const MAX_SHORTCODE_GENERATION_ATTEMPTS = 5;
 
 export async function insertUrl(
-  shortcode: string,
+  code: string | undefined,
   url: string,
   userId: string,
   expiresAt?: Date,
 ) {
-  const [result] = await db
-    .insert(urlsTable)
-    .values({ shortcode, targetUrl: url, userId, expiresAt })
-    .returning({
-      id: urlsTable.id,
-      shortcode: urlsTable.shortcode,
-      targetUrl: urlsTable.targetUrl,
-      expiresAt: urlsTable.expiresAt,
-    });
+  for (
+    let attempt = 0;
+    attempt < MAX_SHORTCODE_GENERATION_ATTEMPTS;
+    attempt++
+  ) {
+    const shortcode = code ?? nanoid(6);
 
-  return result;
+    try {
+      const [result] = await db
+        .insert(urlsTable)
+        .values({ shortcode, targetUrl: url, userId, expiresAt })
+        .returning({
+          id: urlsTable.id,
+          shortcode: urlsTable.shortcode,
+          targetUrl: urlsTable.targetUrl,
+          expiresAt: urlsTable.expiresAt,
+        });
+
+      return result;
+    } catch (err) {
+      // A custom code colliding is a real conflict, not something to retry.
+      if (code || !isUniqueConstraintError(err)) throw err;
+    }
+  }
+
+  throw new Error('Failed to generate a unique shortcode.');
 }
 
 export async function selectTargetUrl(code: string) {

@@ -1,5 +1,4 @@
 import express, { Request, Response } from 'express';
-import { nanoid } from 'nanoid';
 import { z } from 'zod';
 
 import {
@@ -35,14 +34,12 @@ router.post(
 
     const { url, code, expiresAt } = validationResult.data;
 
-    const shortcode = code ?? nanoid(6);
-
     const {
       id,
       shortcode: insertedShortcode,
       targetUrl,
       expiresAt: insertedExpiresAt,
-    } = await insertUrl(shortcode, url, req.user.id, expiresAt);
+    } = await insertUrl(code, url, req.user.id, expiresAt);
 
     return res.status(201).json({
       id: id,
