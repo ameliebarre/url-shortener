@@ -1,9 +1,11 @@
 import { z } from 'zod';
 
+const normalizedEmail = z.string().trim().toLowerCase().pipe(z.email());
+
 export const signupPostRequestBodySchema = z.object({
   firstname: z.string(),
   lastname: z.string(),
-  email: z.email(),
+  email: normalizedEmail,
   password: z
     .string()
     .min(8, 'Password must be at least 8 characters long.')
@@ -12,7 +14,7 @@ export const signupPostRequestBodySchema = z.object({
 });
 
 export const loginPostRequestBodySchema = z.object({
-  email: z.email(),
+  email: normalizedEmail,
   password: z.string().min(3),
 });
 
