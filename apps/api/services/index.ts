@@ -1,4 +1,4 @@
-export { getUserByEmail, insertUser } from './user.service';
+export { getUserByEmail, getUserById, insertUser } from './user.service';
 export {
   insertUrl,
   selectTargetUrl,

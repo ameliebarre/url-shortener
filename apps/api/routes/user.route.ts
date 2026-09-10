@@ -4,7 +4,12 @@ import { z } from 'zod';
 
 import { ensureAuthenticated } from '@/middlewares';
 import { usersTable } from '@/models';
-import { getUserByEmail, insertUser, revokeToken } from '@/services';
+import {
+  getUserByEmail,
+  getUserById,
+  insertUser,
+  revokeToken,
+} from '@/services';
 import {
   asyncHandler,
   createUserToken,
@@ -101,6 +106,20 @@ router.post(
       return res.json({ token });
     },
   ),
+);
+
+router.get(
+  '/me',
+  ensureAuthenticated,
+  asyncHandler(async (req: Request, res: Response) => {
+    const user = await getUserById(req.user!.id);
+
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    return res.json(user);
+  }),
 );
 
 router.post(

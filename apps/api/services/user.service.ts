@@ -18,6 +18,21 @@ export async function getUserByEmail(email: string) {
   return existingUser;
 }
 
+export async function getUserById(id: string) {
+  const [user] = await db
+    .select({
+      id: usersTable.id,
+      firstname: usersTable.firstname,
+      lastname: usersTable.lastname,
+      email: usersTable.email,
+      createdAt: usersTable.createdAt,
+    })
+    .from(usersTable)
+    .where(eq(usersTable.id, id));
+
+  return user;
+}
+
 export async function insertUser(
   firstname: string,
   lastname: string,
