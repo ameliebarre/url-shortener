@@ -15,4 +15,5 @@ export {
   Check as CheckIcon,
   Pencil as PencilIcon,
   Trash2 as TrashIcon,
+  LogOut as LogoutIcon,
 } from 'lucide-react';
