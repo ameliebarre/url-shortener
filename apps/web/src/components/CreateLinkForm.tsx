@@ -23,8 +23,7 @@ export function CreateLinkForm() {
     },
   });
 
-  const error =
-    mutation.error instanceof ApiError ? mutation.error : undefined;
+  const error = mutation.error instanceof ApiError ? mutation.error : undefined;
 
   function handleSubmit(e: SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -46,7 +45,10 @@ export function CreateLinkForm() {
         </h2>
 
         <form onSubmit={handleSubmit} className="mt-4">
-          <label htmlFor="new-link-url" className="text-sm font-medium text-ink">
+          <label
+            htmlFor="new-link-url"
+            className="text-sm font-medium text-ink"
+          >
             Lien à raccourcir
           </label>
           <div className="mt-1.5 flex flex-col gap-2 sm:flex-row">
@@ -64,11 +66,15 @@ export function CreateLinkForm() {
               disabled={mutation.isPending}
               className="flex cursor-pointer items-center justify-center gap-1.5 rounded-lg bg-brand px-5 py-2.5 text-sm font-semibold whitespace-nowrap text-ink transition-all duration-300 hover:gap-2.5 hover:bg-brand/60 disabled:cursor-not-allowed disabled:opacity-60"
             >
-              {mutation.isPending ? 'Génération…' : 'Générer votre lien Shortly'}
+              {mutation.isPending
+                ? 'Génération…'
+                : 'Générer votre lien Shortly'}
               <ArrowRightIcon className="h-4 w-4" />
             </button>
           </div>
-          {error && <p className="mt-2 text-xs text-red-500">{error.message}</p>}
+          {error && (
+            <p className="mt-2 text-xs text-red-500">{error.message}</p>
+          )}
         </form>
       </div>
 
@@ -89,7 +95,10 @@ export function CreateLinkForm() {
             >
               {copied ? 'Copié !' : 'Copier le lien'}
               {copied ? (
-                <CheckIcon key="check" className="h-4 w-4 animate-[pop_0.35s_ease-out]" />
+                <CheckIcon
+                  key="check"
+                  className="h-4 w-4 animate-[pop_0.35s_ease-out]"
+                />
               ) : (
                 <CopyIcon key="copy" className="h-4 w-4" />
               )}
@@ -102,7 +111,7 @@ export function CreateLinkForm() {
               setShortLink(null);
               navigate('/dashboard/links');
             }}
-            className="mt-4 block w-full cursor-pointer text-sm font-semibold text-ink underline underline-offset-2"
+            className="mt-4 block w-full text-left cursor-pointer text-sm font-semibold text-ink underline underline-offset-2"
           >
             Voir mon lien fraîchement créé
           </button>
