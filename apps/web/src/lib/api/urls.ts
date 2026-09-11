@@ -26,9 +26,22 @@ export interface CreateUrlInput {
   expiresAt?: string;
 }
 
+export interface UpdateUrlInput {
+  url?: string;
+  code?: string;
+  expiresAt?: string | null;
+}
+
 export function createUrl(input: CreateUrlInput) {
   return apiFetch<ShortUrl>('/shorten', {
     method: 'POST',
+    body: JSON.stringify(input),
+  });
+}
+
+export function updateUrl(id: string, input: UpdateUrlInput) {
+  return apiFetch<ShortUrl>(`/${id}`, {
+    method: 'PATCH',
     body: JSON.stringify(input),
   });
 }
