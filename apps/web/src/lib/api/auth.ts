@@ -28,9 +28,16 @@ export function signup(input: SignupInput) {
 }
 
 export function login(input: LoginInput) {
-  return apiFetch<{ token: string }>('/auth/login', {
+  return apiFetch<{ token: string; refreshToken: string }>('/auth/login', {
     method: 'POST',
     body: JSON.stringify(input),
+  });
+}
+
+export function refresh(refreshToken: string) {
+  return apiFetch<{ token: string; refreshToken: string }>('/auth/refresh', {
+    method: 'POST',
+    body: JSON.stringify({ refreshToken }),
   });
 }
 
