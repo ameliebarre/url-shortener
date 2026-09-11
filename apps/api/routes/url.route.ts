@@ -24,7 +24,6 @@ const router = express.Router();
 
 router.post(
   '/shorten',
-  ensureAuthenticated,
   shortenRateLimiter,
   asyncHandler(async (req: Request, res: Response) => {
     const validationResult = await shortenPostRequestBodySchema.safeParseAsync(
@@ -44,7 +43,7 @@ router.post(
       shortcode: insertedShortcode,
       targetUrl,
       expiresAt: insertedExpiresAt,
-    } = await insertUrl(code, url, req.user!.id, expiresAt);
+    } = await insertUrl(code, url, req.user?.id ?? null, expiresAt);
 
     return res.status(201).json({
       id: id,
