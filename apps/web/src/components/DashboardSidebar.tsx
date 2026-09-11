@@ -4,7 +4,7 @@ import { ArrowRightIcon, ChainIcon } from './icons';
 
 export function DashboardSidebar() {
   return (
-    <aside className="w-[30%] border-r border-gray-100 p-6">
+    <aside className="w-full border-b border-gray-100 p-4 sm:p-6 lg:w-[30%] lg:border-r lg:border-b-0">
       <Link
         to="/dashboard/links/create"
         className="flex w-full cursor-pointer items-center justify-center gap-1.5 rounded-lg bg-brand px-5 py-2.5 text-sm font-semibold text-ink transition-all duration-300 hover:gap-2.5 hover:bg-brand/60"
