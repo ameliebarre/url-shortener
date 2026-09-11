@@ -1,6 +1,15 @@
+import { useState } from 'react';
+
 import { API_BASE_URL } from '../lib/api-client';
 import type { ShortUrl } from '../lib/api/urls';
-import { ChainIcon, ClockIcon, CopyIcon, PencilIcon, TrashIcon } from './icons';
+import {
+  ChainIcon,
+  CheckIcon,
+  ClockIcon,
+  CopyIcon,
+  PencilIcon,
+  TrashIcon,
+} from './icons';
 
 interface LinkCardProps {
   link: ShortUrl;
@@ -16,9 +25,12 @@ function formatDate(value: string) {
 
 export function LinkCard({ link }: LinkCardProps) {
   const shortUrl = `${API_BASE_URL}/${link.shortcode}`;
+  const [copied, setCopied] = useState(false);
 
   async function handleCopy() {
     await navigator.clipboard.writeText(shortUrl);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 1500);
   }
 
   return (
@@ -42,9 +54,16 @@ export function LinkCard({ link }: LinkCardProps) {
               type="button"
               onClick={handleCopy}
               aria-label="Copier le lien"
-              className="cursor-pointer text-gray-400 hover:text-ink"
+              className={`cursor-pointer transition-colors ${copied ? 'text-green-500' : 'text-gray-400 hover:text-ink'}`}
             >
-              <CopyIcon className="h-3.5 w-3.5" />
+              {copied ? (
+                <CheckIcon
+                  key="check"
+                  className="h-3.5 w-3.5 animate-[pop_0.35s_ease-out]"
+                />
+              ) : (
+                <CopyIcon key="copy" className="h-3.5 w-3.5" />
+              )}
             </button>
           </div>
 
