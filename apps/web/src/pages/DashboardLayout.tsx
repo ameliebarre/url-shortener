@@ -8,10 +8,10 @@ export function DashboardLayout() {
     <div className="flex min-h-screen flex-col bg-white">
       <Header />
 
-      <div className="flex flex-1">
+      <div className="flex flex-1 flex-col lg:flex-row">
         <DashboardSidebar />
 
-        <main className="flex-1 bg-gray-50 p-6">
+        <main className="flex-1 bg-gray-50 p-4 sm:p-6">
           <Outlet />
         </main>
       </div>
