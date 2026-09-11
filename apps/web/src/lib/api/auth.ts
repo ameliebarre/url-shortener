@@ -37,3 +37,7 @@ export function login(input: LoginInput) {
 export function getMe() {
   return apiFetch<Me>('/auth/me');
 }
+
+export function logout() {
+  return apiFetch<{ loggedOut: true }>('/auth/logout', { method: 'POST' });
+}
