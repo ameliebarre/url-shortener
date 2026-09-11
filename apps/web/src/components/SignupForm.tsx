@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 import { FormField } from './FormField';
 import { Logo } from './Logo';
 import { PasswordField } from './PasswordField';
@@ -67,9 +69,12 @@ export function SignupForm() {
 
         <p className="mt-6 text-center text-sm text-gray-500">
           Already have an account?{' '}
-          <span className="cursor-pointer font-semibold text-ink underline underline-offset-2">
+          <Link
+            to="/login"
+            className="font-semibold text-ink underline underline-offset-2"
+          >
             Sign in
-          </span>
+          </Link>
         </p>
       </div>
     </div>

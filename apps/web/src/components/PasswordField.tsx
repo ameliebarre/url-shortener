@@ -3,7 +3,13 @@ import { useState } from 'react';
 import { FormField } from './FormField';
 import { EyeIcon, EyeOffIcon, LockIcon } from './icons';
 
-export function PasswordField() {
+interface PasswordFieldProps {
+  placeholder?: string;
+}
+
+export function PasswordField({
+  placeholder = 'At least 8 characters',
+}: PasswordFieldProps) {
   const [visible, setVisible] = useState(false);
 
   return (
@@ -12,7 +18,7 @@ export function PasswordField() {
       label="Password"
       icon={<LockIcon className="h-4 w-4" />}
       type={visible ? 'text' : 'password'}
-      placeholder="At least 8 characters"
+      placeholder={placeholder}
       endAdornment={
         <button
           type="button"
