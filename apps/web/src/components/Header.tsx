@@ -15,6 +15,7 @@ export function Header() {
     mutationFn: logout,
     onSettled: () => {
       localStorage.removeItem('token');
+      localStorage.removeItem('refreshToken');
       queryClient.removeQueries({ queryKey: ['me'] });
       navigate('/');
     },

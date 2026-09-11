@@ -16,9 +16,38 @@ export class ApiError extends Error {
   }
 }
 
+function clearTokens() {
+  localStorage.removeItem('token');
+  localStorage.removeItem('refreshToken');
+}
+
+let refreshPromise: Promise<boolean> | null = null;
+
+async function refreshAccessToken(): Promise<boolean> {
+  const refreshToken = localStorage.getItem('refreshToken');
+  if (!refreshToken) return false;
+
+  const res = await fetch(`${API_BASE_URL}/auth/refresh`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ refreshToken }),
+  });
+
+  if (!res.ok) {
+    clearTokens();
+    return false;
+  }
+
+  const body = await res.json();
+  localStorage.setItem('token', body.token);
+  localStorage.setItem('refreshToken', body.refreshToken);
+  return true;
+}
+
 export async function apiFetch<T>(
   path: string,
   options: RequestInit = {},
+  isRetry = false,
 ): Promise<T> {
   const token = localStorage.getItem('token');
 
@@ -31,9 +60,19 @@ export async function apiFetch<T>(
     },
   });
 
+  if (res.status === 401 && path !== '/auth/refresh' && !isRetry) {
+    refreshPromise ??= refreshAccessToken().finally(() => {
+      refreshPromise = null;
+    });
+
+    if (await refreshPromise) {
+      return apiFetch<T>(path, options, true);
+    }
+  }
+
   if (!res.ok) {
     if (res.status === 401) {
-      localStorage.removeItem('token');
+      clearTokens();
     }
 
     const body = await res.json().catch(() => null);

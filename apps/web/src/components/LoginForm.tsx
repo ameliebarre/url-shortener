@@ -19,8 +19,9 @@ export function LoginForm() {
 
   const mutation = useMutation({
     mutationFn: login,
-    onSuccess: ({ token }) => {
+    onSuccess: ({ token, refreshToken }) => {
       localStorage.setItem('token', token);
+      localStorage.setItem('refreshToken', refreshToken);
       navigate('/');
     },
   });
