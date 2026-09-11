@@ -4,5 +4,6 @@
   },
   "eslint.validate": ["javascript", "typescript"],
   "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "editor.formatOnSave": true
+  "editor.formatOnSave": true,
+  "js/ts.tsdk.path": "node_modules/typescript/lib"
 }
