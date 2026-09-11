@@ -91,9 +91,9 @@ export function CreateLinkForm({ onViewLinks }: CreateLinkFormProps) {
             >
               {copied ? 'Copié !' : 'Copier le lien'}
               {copied ? (
-                <CheckIcon className="h-4 w-4" />
+                <CheckIcon key="check" className="h-4 w-4 animate-[pop_0.35s_ease-out]" />
               ) : (
-                <CopyIcon className="h-4 w-4" />
+                <CopyIcon key="copy" className="h-4 w-4" />
               )}
             </button>
           </div>
