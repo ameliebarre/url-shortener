@@ -49,3 +49,7 @@ export function updateUrl(id: string, input: UpdateUrlInput) {
 export function fetchUrls(page: number, pageSize: number) {
   return apiFetch<PaginatedUrls>(`/codes?page=${page}&pageSize=${pageSize}`);
 }
+
+export function deleteUrl(id: string) {
+  return apiFetch<{ deleted: true }>(`/${id}`, { method: 'DELETE' });
+}

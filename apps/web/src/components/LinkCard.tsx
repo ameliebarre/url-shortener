@@ -1,8 +1,9 @@
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import { API_BASE_URL } from '../lib/api-client';
-import type { ShortUrl } from '../lib/api/urls';
+import { deleteUrl, type ShortUrl } from '../lib/api/urls';
 import {
   ChainIcon,
   CheckIcon,
@@ -27,11 +28,25 @@ function formatDate(value: string) {
 export function LinkCard({ link }: LinkCardProps) {
   const shortUrl = `${API_BASE_URL}/${link.shortcode}`;
   const [copied, setCopied] = useState(false);
+  const queryClient = useQueryClient();
+
+  const deleteMutation = useMutation({
+    mutationFn: () => deleteUrl(link.id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['urls'] });
+    },
+  });
 
   async function handleCopy() {
     await navigator.clipboard.writeText(shortUrl);
     setCopied(true);
     setTimeout(() => setCopied(false), 1500);
+  }
+
+  function handleDelete() {
+    if (window.confirm('Supprimer ce lien ?')) {
+      deleteMutation.mutate();
+    }
   }
 
   return (
@@ -94,8 +109,10 @@ export function LinkCard({ link }: LinkCardProps) {
           </Link>
           <button
             type="button"
+            onClick={handleDelete}
+            disabled={deleteMutation.isPending}
             aria-label="Supprimer"
-            className="cursor-pointer text-gray-400 hover:text-red-500"
+            className="cursor-pointer text-gray-400 hover:text-red-500 disabled:cursor-not-allowed disabled:opacity-60"
           >
             <TrashIcon className="h-4 w-4" />
           </button>
