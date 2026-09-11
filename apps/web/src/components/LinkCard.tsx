@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 
 import { API_BASE_URL } from '../lib/api-client';
 import type { ShortUrl } from '../lib/api/urls';
@@ -84,13 +85,13 @@ export function LinkCard({ link }: LinkCardProps) {
         </div>
 
         <div className="flex shrink-0 items-center gap-3">
-          <button
-            type="button"
+          <Link
+            to={`/dashboard/${link.id}/edit`}
             aria-label="Modifier"
             className="cursor-pointer text-gray-400 hover:text-ink"
           >
             <PencilIcon className="h-4 w-4" />
-          </button>
+          </Link>
           <button
             type="button"
             aria-label="Supprimer"

@@ -1,16 +1,14 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useState, type SubmitEvent } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { API_BASE_URL, ApiError } from '../lib/api-client';
 import { createUrl } from '../lib/api/urls';
 import { ArrowRightIcon, CheckIcon, CopyIcon } from './icons';
 import { Modal } from './Modal';
 
-interface CreateLinkFormProps {
-  onViewLinks: () => void;
-}
-
-export function CreateLinkForm({ onViewLinks }: CreateLinkFormProps) {
+export function CreateLinkForm() {
+  const navigate = useNavigate();
   const [url, setUrl] = useState('');
   const [shortLink, setShortLink] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
@@ -102,7 +100,7 @@ export function CreateLinkForm({ onViewLinks }: CreateLinkFormProps) {
             type="button"
             onClick={() => {
               setShortLink(null);
-              onViewLinks();
+              navigate('/dashboard/links');
             }}
             className="mt-4 block w-full cursor-pointer text-sm font-semibold text-ink underline underline-offset-2"
           >
