@@ -1,6 +1,7 @@
 @import 'tailwindcss';
 
 @theme {
-  --color-brand: #dff24e;
+  --color-brand: #d0ff00;
   --color-ink: #0a0a0a;
+  --font-sans: 'Manrope', sans-serif;
 }
