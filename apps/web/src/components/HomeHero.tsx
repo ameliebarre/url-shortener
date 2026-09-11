@@ -20,8 +20,7 @@ export function HomeHero() {
     },
   });
 
-  const error =
-    mutation.error instanceof ApiError ? mutation.error : undefined;
+  const error = mutation.error instanceof ApiError ? mutation.error : undefined;
 
   function handleSubmit(e: SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -126,7 +125,7 @@ export function HomeHero() {
             </button>
           </div>
 
-          <p className="mt-4 text-center text-sm text-gray-500">
+          <p className="mt-4 text-sm text-gray-500">
             <Link
               to="/login"
               className="font-semibold text-ink underline underline-offset-2"
