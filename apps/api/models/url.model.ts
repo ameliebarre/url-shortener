@@ -8,9 +8,9 @@ export const urlsTable = pgTable(
     id: uuid().primaryKey().defaultRandom(),
     shortcode: varchar('code', { length: 155 }).notNull().unique(),
     targetUrl: varchar('target_url').notNull(),
-    userId: uuid('user_id')
-      .references(() => usersTable.id, { onDelete: 'cascade' })
-      .notNull(),
+    userId: uuid('user_id').references(() => usersTable.id, {
+      onDelete: 'cascade',
+    }),
 
     createdAt: timestamp('created_at').defaultNow().notNull(),
     updatedAt: timestamp('updated_at').$onUpdate(() => new Date()),

@@ -10,7 +10,7 @@ const MAX_SHORTCODE_GENERATION_ATTEMPTS = 5;
 export async function insertUrl(
   code: string | undefined,
   url: string,
-  userId: string,
+  userId: string | null,
   expiresAt?: Date,
 ) {
   for (
