@@ -8,12 +8,12 @@ export function Header() {
       <Logo />
 
       <div className="flex items-center gap-3">
-        <button
-          type="button"
+        <Link
+          to="/login"
           className="cursor-pointer rounded-full border border-ink px-5 py-2 text-sm font-medium text-ink transition-colors hover:bg-ink/5"
         >
           Log in
-        </button>
+        </Link>
         <Link
           to="/signup"
           className="cursor-pointer rounded-full bg-ink px-5 py-2 text-sm font-medium text-white transition-colors hover:bg-ink/90"
