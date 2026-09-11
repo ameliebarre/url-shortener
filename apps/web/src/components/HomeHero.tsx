@@ -35,11 +35,11 @@ export function HomeHero() {
   }
 
   return (
-    <section className="relative overflow-hidden bg-brand">
+    <section className="relative flex flex-1 flex-col justify-center overflow-hidden bg-brand">
       <div className="pointer-events-none absolute -top-40 -right-15 h-100 w-100 rounded-full border-48 border-black/4" />
       <div className="pointer-events-none absolute -bottom-55 -left-35 h-110 w-110 rounded-full border-48 border-black/4" />
 
-      <div className="relative mx-auto grid max-w-7xl gap-16 px-6 py-36 sm:px-10 lg:grid-cols-2 lg:items-center">
+      <div className="relative mx-auto grid w-full max-w-7xl gap-16 px-6 py-20 sm:px-10 lg:grid-cols-2 lg:items-center">
         <div>
           <h1 className="max-w-180 text-[clamp(3.4rem,7.4vw,7.1rem)] font-semibold leading-[.91] tracking-[-0.075em]">
             <span className="text-ink">Short links.</span>
@@ -118,7 +118,10 @@ export function HomeHero() {
             >
               {copied ? 'Copié !' : 'Copier le lien'}
               {copied ? (
-                <CheckIcon key="check" className="h-4 w-4 animate-[pop_0.35s_ease-out]" />
+                <CheckIcon
+                  key="check"
+                  className="h-4 w-4 animate-[pop_0.35s_ease-out]"
+                />
               ) : (
                 <CopyIcon key="copy" className="h-4 w-4" />
               )}
@@ -128,7 +131,7 @@ export function HomeHero() {
           <p className="mt-4 text-sm text-gray-500">
             <Link
               to="/login"
-              className="font-semibold text-ink underline underline-offset-2"
+              className="font-semibold text-left text-ink underline underline-offset-2"
             >
               Connectez-vous
             </Link>{' '}
