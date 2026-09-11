@@ -5,6 +5,19 @@ export interface ShortUrl {
   shortcode: string;
   targetUrl: string;
   expiresAt: string | null;
+  createdAt: string;
+}
+
+export interface Pagination {
+  page: number;
+  pageSize: number;
+  total: number;
+  totalPages: number;
+}
+
+export interface PaginatedUrls {
+  codes: ShortUrl[];
+  pagination: Pagination;
 }
 
 export interface CreateUrlInput {
@@ -18,4 +31,8 @@ export function createUrl(input: CreateUrlInput) {
     method: 'POST',
     body: JSON.stringify(input),
   });
+}
+
+export function fetchUrls(page: number, pageSize: number) {
+  return apiFetch<PaginatedUrls>(`/codes?page=${page}&pageSize=${pageSize}`);
 }
