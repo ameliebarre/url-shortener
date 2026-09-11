@@ -32,6 +32,10 @@ export async function apiFetch<T>(
   });
 
   if (!res.ok) {
+    if (res.status === 401) {
+      localStorage.removeItem('token');
+    }
+
     const body = await res.json().catch(() => null);
     throw new ApiError(
       res.status,

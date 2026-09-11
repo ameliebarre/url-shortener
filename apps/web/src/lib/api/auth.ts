@@ -1,5 +1,13 @@
 import { apiFetch } from '../api-client';
 
+export interface Me {
+  id: string;
+  firstname: string;
+  lastname: string;
+  email: string;
+  createdAt: string;
+}
+
 export interface SignupInput {
   firstname: string;
   lastname: string;
@@ -24,4 +32,8 @@ export function login(input: LoginInput) {
     method: 'POST',
     body: JSON.stringify(input),
   });
+}
+
+export function getMe() {
+  return apiFetch<Me>('/auth/me');
 }
