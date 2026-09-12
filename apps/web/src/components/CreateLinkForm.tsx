@@ -4,12 +4,15 @@ import { useNavigate } from 'react-router-dom';
 
 import { API_BASE_URL, ApiError } from '../lib/api-client';
 import { createUrl } from '../lib/api/urls';
+import { FieldErrors } from './FieldErrors';
 import { ArrowRightIcon, CheckIcon, CopyIcon } from './icons';
 import { Modal } from './Modal';
 
 export function CreateLinkForm() {
   const navigate = useNavigate();
   const [url, setUrl] = useState('');
+  const [code, setCode] = useState('');
+  const [expiresAt, setExpiresAt] = useState('');
   const [shortLink, setShortLink] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const queryClient = useQueryClient();
@@ -19,6 +22,8 @@ export function CreateLinkForm() {
     onSuccess: (result) => {
       setShortLink(`${API_BASE_URL}/${result.shortcode}`);
       setUrl('');
+      setCode('');
+      setExpiresAt('');
       queryClient.invalidateQueries({ queryKey: ['urls'] });
     },
   });
@@ -27,7 +32,11 @@ export function CreateLinkForm() {
 
   function handleSubmit(e: SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
-    mutation.mutate({ url });
+    mutation.mutate({
+      url,
+      code: code.trim() || undefined,
+      expiresAt: expiresAt ? new Date(expiresAt).toISOString() : undefined,
+    });
   }
 
   async function handleCopy() {
@@ -72,9 +81,44 @@ export function CreateLinkForm() {
               <ArrowRightIcon className="h-4 w-4" />
             </button>
           </div>
-          {error && (
+          {error && !error.fieldErrors && (
             <p className="mt-2 text-xs text-red-500">{error.message}</p>
           )}
+
+          <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
+            <div>
+              <label
+                htmlFor="new-link-code"
+                className="block text-xs font-medium text-gray-500"
+              >
+                Code personnalisé (optionnel)
+              </label>
+              <input
+                id="new-link-code"
+                value={code}
+                onChange={(e) => setCode(e.target.value)}
+                placeholder="mon-lien"
+                className="mt-1 w-full rounded-lg border-2 border-transparent bg-gray-50 px-3 py-2 text-sm text-ink placeholder:text-gray-400 outline-none transition-colors focus:border-ink"
+              />
+              <FieldErrors errors={error?.fieldErrors?.code} />
+            </div>
+            <div>
+              <label
+                htmlFor="new-link-expires"
+                className="block text-xs font-medium text-gray-500"
+              >
+                Expiration (optionnel)
+              </label>
+              <input
+                id="new-link-expires"
+                type="datetime-local"
+                value={expiresAt}
+                onChange={(e) => setExpiresAt(e.target.value)}
+                className="mt-1 w-full rounded-lg border-2 border-transparent bg-gray-50 px-3 py-2 text-sm text-ink outline-none transition-colors focus:border-ink"
+              />
+              <FieldErrors errors={error?.fieldErrors?.expiresAt} />
+            </div>
+          </div>
         </form>
       </div>
 
