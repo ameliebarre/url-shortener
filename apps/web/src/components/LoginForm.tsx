@@ -1,9 +1,6 @@
-import { useMutation } from '@tanstack/react-query';
-import { type SubmitEvent } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
-import { ApiError } from '../lib/api-client';
-import { login } from '../lib/api/auth';
+import { useLoginForm } from '../hooks/use-login-form';
 import { FieldErrors } from './FieldErrors';
 import { FormField } from './FormField';
 import { Logo } from './Logo';
@@ -11,33 +8,20 @@ import { PasswordField } from './PasswordField';
 import { ArrowRightIcon, MailIcon } from './icons';
 
 export function LoginForm() {
-  const navigate = useNavigate();
   const location = useLocation();
   const justSignedUp = Boolean(
     (location.state as { justSignedUp?: boolean } | null)?.justSignedUp,
   );
 
-  const mutation = useMutation({
-    mutationFn: login,
-    onSuccess: ({ token, refreshToken }) => {
-      localStorage.setItem('token', token);
-      localStorage.setItem('refreshToken', refreshToken);
-      navigate('/');
-    },
-  });
-
-  const error =
-    mutation.error instanceof ApiError ? mutation.error : undefined;
-
-  function handleSubmit(e: SubmitEvent<HTMLFormElement>) {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-
-    mutation.mutate({
-      email: formData.get('email') as string,
-      password: formData.get('password') as string,
-    });
-  }
+  const {
+    email,
+    setEmail,
+    password,
+    setPassword,
+    isPending,
+    error,
+    handleSubmit,
+  } = useLoginForm();
 
   return (
     <div className="flex flex-col justify-center px-8 py-12 sm:px-16 lg:px-24">
@@ -70,21 +54,25 @@ export function LoginForm() {
               icon={<MailIcon className="h-4 w-4" />}
               type="email"
               placeholder="jane@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
             <FieldErrors errors={error?.fieldErrors?.email} />
           </div>
 
           <PasswordField
             placeholder="Enter your password"
+            value={password}
+            onChange={setPassword}
             fieldErrors={error?.fieldErrors?.password}
           />
 
           <button
             type="submit"
-            disabled={mutation.isPending}
+            disabled={isPending}
             className="flex cursor-pointer items-center justify-center gap-2 rounded-lg bg-brand py-3 font-semibold text-ink transition-all duration-300 hover:gap-4 hover:bg-brand/60 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            {mutation.isPending ? 'Logging in…' : 'Log in'}
+            {isPending ? 'Logging in…' : 'Log in'}
             <ArrowRightIcon className="h-4 w-4" />
           </button>
         </form>

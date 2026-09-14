@@ -1,9 +1,6 @@
-import { useMutation } from '@tanstack/react-query';
-import { type SubmitEvent } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
-import { ApiError } from '../lib/api-client';
-import { signup } from '../lib/api/auth';
+import { useSignupForm } from '../hooks/use-signup-form';
 import { FieldErrors } from './FieldErrors';
 import { FormField } from './FormField';
 import { Logo } from './Logo';
@@ -11,29 +8,21 @@ import { PasswordField } from './PasswordField';
 import { ArrowRightIcon, MailIcon, UserIcon } from './icons';
 
 export function SignupForm() {
-  const navigate = useNavigate();
-
-  const mutation = useMutation({
-    mutationFn: signup,
-    onSuccess: () => {
-      navigate('/login', { state: { justSignedUp: true } });
-    },
-  });
-
-  const error =
-    mutation.error instanceof ApiError ? mutation.error : undefined;
-
-  function handleSubmit(e: SubmitEvent<HTMLFormElement>) {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
-
-    mutation.mutate({
-      firstname: formData.get('firstname') as string,
-      lastname: formData.get('lastname') as string,
-      email: formData.get('email') as string,
-      password: formData.get('password') as string,
-    });
-  }
+  const {
+    firstname,
+    setFirstname,
+    lastname,
+    setLastname,
+    email,
+    setEmail,
+    password,
+    setPassword,
+    agreedToTerms,
+    setAgreedToTerms,
+    isPending,
+    error,
+    handleSubmit,
+  } = useSignupForm();
 
   return (
     <div className="flex flex-col justify-center px-8 py-12 sm:px-16 lg:px-24">
@@ -62,6 +51,8 @@ export function SignupForm() {
                 label="First name"
                 icon={<UserIcon className="h-4 w-4" />}
                 placeholder="Jane"
+                value={firstname}
+                onChange={(e) => setFirstname(e.target.value)}
               />
               <FieldErrors errors={error?.fieldErrors?.firstname} />
             </div>
@@ -72,6 +63,8 @@ export function SignupForm() {
                 label="Last name"
                 icon={<UserIcon className="h-4 w-4" />}
                 placeholder="Doe"
+                value={lastname}
+                onChange={(e) => setLastname(e.target.value)}
               />
               <FieldErrors errors={error?.fieldErrors?.lastname} />
             </div>
@@ -85,16 +78,24 @@ export function SignupForm() {
               icon={<MailIcon className="h-4 w-4" />}
               type="email"
               placeholder="jane@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
             <FieldErrors errors={error?.fieldErrors?.email} />
           </div>
 
-          <PasswordField fieldErrors={error?.fieldErrors?.password} />
+          <PasswordField
+            value={password}
+            onChange={setPassword}
+            fieldErrors={error?.fieldErrors?.password}
+          />
 
           <label className="flex items-start gap-2 text-sm text-gray-600">
             <input
               type="checkbox"
               required
+              checked={agreedToTerms}
+              onChange={(e) => setAgreedToTerms(e.target.checked)}
               className="mt-0.5 h-4 w-4 rounded accent-ink"
             />
             <span>
@@ -108,10 +109,10 @@ export function SignupForm() {
 
           <button
             type="submit"
-            disabled={mutation.isPending}
+            disabled={isPending}
             className="flex cursor-pointer items-center justify-center gap-2 rounded-lg bg-brand py-3 font-semibold text-ink transition-all duration-300 hover:gap-4 hover:bg-brand/60 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            {mutation.isPending ? 'Creating account…' : 'Create account'}
+            {isPending ? 'Creating account…' : 'Create account'}
             <ArrowRightIcon className="h-4 w-4" />
           </button>
         </form>

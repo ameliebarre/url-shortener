@@ -5,11 +5,15 @@ import { FormField } from './FormField';
 import { EyeIcon, EyeOffIcon, LockIcon } from './icons';
 
 interface PasswordFieldProps {
+  value: string;
+  onChange: (value: string) => void;
   placeholder?: string;
   fieldErrors?: string[];
 }
 
 export function PasswordField({
+  value,
+  onChange,
   placeholder = 'At least 8 characters',
   fieldErrors,
 }: PasswordFieldProps) {
@@ -24,6 +28,8 @@ export function PasswordField({
         icon={<LockIcon className="h-4 w-4" />}
         type={visible ? 'text' : 'password'}
         placeholder={placeholder}
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
         endAdornment={
           <button
             type="button"
