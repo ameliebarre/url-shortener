@@ -23,13 +23,13 @@ export function EditLinkForm() {
   const [url, setUrl] = useState('');
   const [code, setCode] = useState('');
   const [expiresAt, setExpiresAt] = useState('');
-  const [initialized, setInitialized] = useState(false);
+  const [initializedForId, setInitializedForId] = useState<string>();
 
-  if (link && !initialized) {
+  if (link && initializedForId !== idLink) {
     setUrl(link.targetUrl);
     setCode(link.shortcode);
     setExpiresAt(link.expiresAt ? link.expiresAt.slice(0, 16) : '');
-    setInitialized(true);
+    setInitializedForId(idLink);
   }
 
   const mutation = useMutation({
