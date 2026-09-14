@@ -12,3 +12,11 @@ export function verifyPassword(
 ): Promise<boolean> {
   return bcrypt.compare(password, hash);
 }
+
+// A hash with no matching password. Comparing against it when a login
+// email doesn't exist keeps the response time the same as a real
+// password mismatch, so latency can't be used to enumerate accounts.
+export const DUMMY_PASSWORD_HASH = bcrypt.hashSync(
+  'no-account-has-this-password',
+  SALT_ROUNDS,
+);

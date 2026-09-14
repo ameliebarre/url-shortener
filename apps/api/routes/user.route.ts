@@ -12,6 +12,7 @@ import {
 import {
   asyncHandler,
   createUserToken,
+  DUMMY_PASSWORD_HASH,
   errorBody,
   hashPassword,
   validationErrorBody,
@@ -90,16 +91,13 @@ router.post(
 
       const user = await getUserByEmail(email);
 
-      if (!user) {
-        return res
-          .status(404)
-          .json(errorBody(`User with email ${email} does not exist.`));
-      }
+      const isPasswordValid = await verifyPassword(
+        password,
+        user?.password ?? DUMMY_PASSWORD_HASH,
+      );
 
-      const isPasswordValid = await verifyPassword(password, user.password);
-
-      if (!isPasswordValid) {
-        return res.status(400).json(errorBody('Invalid password.'));
+      if (!user || !isPasswordValid) {
+        return res.status(401).json(errorBody('Invalid email or password.'));
       }
 
       const token = await createUserToken({ id: user.id });
