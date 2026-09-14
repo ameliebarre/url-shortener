@@ -19,6 +19,14 @@ export function LinksView() {
         <p className="text-sm text-gray-500">Chargement…</p>
       )}
 
+      {linksQuery.isError && (
+        <div className="w-full rounded-2xl bg-white p-6 shadow-sm">
+          <p className="text-sm text-red-500">
+            Impossible de charger vos liens. Réessayez plus tard.
+          </p>
+        </div>
+      )}
+
       {linksQuery.data?.codes.length === 0 && (
         <div className="w-full rounded-2xl bg-white p-6 shadow-sm">
           <p className="text-sm text-gray-500">

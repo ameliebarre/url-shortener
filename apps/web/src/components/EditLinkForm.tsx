@@ -57,6 +57,16 @@ export function EditLinkForm() {
     return <p className="text-sm text-gray-500">Chargement…</p>;
   }
 
+  if (linksQuery.isError) {
+    return (
+      <div className="w-full rounded-2xl bg-white p-6 shadow-sm">
+        <p className="text-sm text-red-500">
+          Impossible de charger ce lien. Réessayez plus tard.
+        </p>
+      </div>
+    );
+  }
+
   if (!link) {
     return (
       <div className="w-full rounded-2xl bg-white p-6 shadow-sm">
