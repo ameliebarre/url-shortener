@@ -2,6 +2,7 @@ export { getUserByEmail, getUserById, insertUser } from './user.service';
 export {
   insertUrl,
   selectTargetUrl,
+  selectUrlById,
   selectCodesFromUser,
   updateUserURL,
   deleteUserURL,

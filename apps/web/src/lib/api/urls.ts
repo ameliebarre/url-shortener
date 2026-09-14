@@ -39,6 +39,10 @@ export function createUrl(input: CreateUrlInput) {
   });
 }
 
+export function fetchUrlById(id: string) {
+  return apiFetch<ShortUrl>(`/codes/${id}`);
+}
+
 export function updateUrl(id: string, input: UpdateUrlInput) {
   return apiFetch<ShortUrl>(`/${id}`, {
     method: 'PATCH',

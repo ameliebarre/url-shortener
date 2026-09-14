@@ -3,22 +3,25 @@ import { useState, type SubmitEvent } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { ApiError } from '../lib/api-client';
-import { fetchUrls, updateUrl } from '../lib/api/urls';
+import { fetchUrlById, updateUrl } from '../lib/api/urls';
 import { ArrowRightIcon } from './icons';
-
-const PAGE_SIZE = 20;
 
 export function EditLinkForm() {
   const { idLink } = useParams<{ idLink: string }>();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
-  const linksQuery = useQuery({
-    queryKey: ['urls'],
-    queryFn: () => fetchUrls(1, PAGE_SIZE),
+  const linkQuery = useQuery({
+    queryKey: ['urls', idLink],
+    queryFn: () => fetchUrlById(idLink!),
+    enabled: Boolean(idLink),
+    retry: false,
   });
 
-  const link = linksQuery.data?.codes.find((code) => code.id === idLink);
+  const link = linkQuery.data;
+  const queryError =
+    linkQuery.error instanceof ApiError ? linkQuery.error : undefined;
+  const notFound = queryError?.status === 404;
 
   const [url, setUrl] = useState('');
   const [code, setCode] = useState('');
@@ -53,24 +56,24 @@ export function EditLinkForm() {
     mutation.mutate();
   }
 
-  if (linksQuery.isPending) {
+  if (linkQuery.isPending) {
     return <p className="text-sm text-gray-500">Chargement…</p>;
   }
 
-  if (linksQuery.isError) {
+  if (notFound) {
+    return (
+      <div className="w-full rounded-2xl bg-white p-6 shadow-sm">
+        <p className="text-sm text-gray-500">Ce lien est introuvable.</p>
+      </div>
+    );
+  }
+
+  if (linkQuery.isError || !link) {
     return (
       <div className="w-full rounded-2xl bg-white p-6 shadow-sm">
         <p className="text-sm text-red-500">
           Impossible de charger ce lien. Réessayez plus tard.
         </p>
-      </div>
-    );
-  }
-
-  if (!link) {
-    return (
-      <div className="w-full rounded-2xl bg-white p-6 shadow-sm">
-        <p className="text-sm text-gray-500">Ce lien est introuvable.</p>
       </div>
     );
   }

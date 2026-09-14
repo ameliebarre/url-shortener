@@ -57,6 +57,15 @@ export async function selectTargetUrl(code: string) {
   return result;
 }
 
+export async function selectUrlById(urlId: string, userId: string) {
+  const [result] = await db
+    .select()
+    .from(urlsTable)
+    .where(and(eq(urlsTable.id, urlId), eq(urlsTable.userId, userId)));
+
+  return result;
+}
+
 export async function selectCodesFromUser(
   userId: string,
   { page, pageSize }: { page: number; pageSize: number },

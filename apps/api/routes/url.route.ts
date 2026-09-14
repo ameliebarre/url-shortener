@@ -5,6 +5,7 @@ import {
   deleteUserURL,
   insertUrl,
   selectCodesFromUser,
+  selectUrlById,
   updateUserURL,
 } from '@/services';
 import { asyncHandler, errorBody, validationErrorBody } from '@/utils';
@@ -77,6 +78,30 @@ router.get(
         totalPages: Math.ceil(total / pageSize),
       },
     });
+  }),
+);
+
+router.get(
+  '/codes/:id',
+  ensureAuthenticated,
+  asyncHandler(async (req: Request, res: Response) => {
+    const validationResult = urlIdParamsSchema.safeParse(req.params);
+
+    if (validationResult.error) {
+      return res
+        .status(400)
+        .json(validationErrorBody(validationResult.error));
+    }
+
+    const { id: urlId } = validationResult.data;
+
+    const url = await selectUrlById(urlId, req.user!.id);
+
+    if (!url) {
+      return res.status(404).json(errorBody('URL not found'));
+    }
+
+    return res.json(url);
   }),
 );
 
