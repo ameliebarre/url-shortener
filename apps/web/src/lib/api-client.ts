@@ -27,21 +27,25 @@ async function refreshAccessToken(): Promise<boolean> {
   const refreshToken = localStorage.getItem('refreshToken');
   if (!refreshToken) return false;
 
-  const res = await fetch(`${API_BASE_URL}/auth/refresh`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ refreshToken }),
-  });
+  try {
+    const res = await fetch(`${API_BASE_URL}/auth/refresh`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ refreshToken }),
+    });
 
-  if (!res.ok) {
-    clearTokens();
+    if (!res.ok) {
+      clearTokens();
+      return false;
+    }
+
+    const body = await res.json();
+    localStorage.setItem('token', body.token);
+    localStorage.setItem('refreshToken', body.refreshToken);
+    return true;
+  } catch {
     return false;
   }
-
-  const body = await res.json();
-  localStorage.setItem('token', body.token);
-  localStorage.setItem('refreshToken', body.refreshToken);
-  return true;
 }
 
 export async function apiFetch<T>(
