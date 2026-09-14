@@ -1,15 +1,49 @@
+import { lazy, Suspense, type ReactNode } from 'react';
 import { Navigate, Route, Routes } from 'react-router-dom';
 
-import { CreateLinkForm } from './components/CreateLinkForm';
-import { EditLinkForm } from './components/EditLinkForm';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { GuestRoute } from './components/GuestRoute';
-import { LinksView } from './components/LinksView';
 import { ProtectedRoute } from './components/ProtectedRoute';
-import { DashboardLayout } from './pages/DashboardLayout';
-import { HomePage } from './pages/HomePage';
-import { LoginPage } from './pages/LoginPage';
-import { SignupPage } from './pages/SignupPage';
+
+const HomePage = lazy(() =>
+  import('./pages/HomePage').then((m) => ({ default: m.HomePage })),
+);
+const LoginPage = lazy(() =>
+  import('./pages/LoginPage').then((m) => ({ default: m.LoginPage })),
+);
+const SignupPage = lazy(() =>
+  import('./pages/SignupPage').then((m) => ({ default: m.SignupPage })),
+);
+const DashboardLayout = lazy(() =>
+  import('./pages/DashboardLayout').then((m) => ({
+    default: m.DashboardLayout,
+  })),
+);
+const CreateLinkForm = lazy(() =>
+  import('./components/CreateLinkForm').then((m) => ({
+    default: m.CreateLinkForm,
+  })),
+);
+const LinksView = lazy(() =>
+  import('./components/LinksView').then((m) => ({ default: m.LinksView })),
+);
+const EditLinkForm = lazy(() =>
+  import('./components/EditLinkForm').then((m) => ({
+    default: m.EditLinkForm,
+  })),
+);
+
+function RouteBoundary({ children }: { children: ReactNode }) {
+  return (
+    <ErrorBoundary>
+      <Suspense
+        fallback={<p className="p-6 text-sm text-gray-500">Chargement…</p>}
+      >
+        {children}
+      </Suspense>
+    </ErrorBoundary>
+  );
+}
 
 function App() {
   return (
@@ -18,25 +52,25 @@ function App() {
         <Route
           path="/"
           element={
-            <ErrorBoundary>
+            <RouteBoundary>
               <HomePage />
-            </ErrorBoundary>
+            </RouteBoundary>
           }
         />
         <Route
           path="/login"
           element={
-            <ErrorBoundary>
+            <RouteBoundary>
               <LoginPage />
-            </ErrorBoundary>
+            </RouteBoundary>
           }
         />
         <Route
           path="/signup"
           element={
-            <ErrorBoundary>
+            <RouteBoundary>
               <SignupPage />
-            </ErrorBoundary>
+            </RouteBoundary>
           }
         />
       </Route>
@@ -44,9 +78,9 @@ function App() {
         <Route
           path="/dashboard"
           element={
-            <ErrorBoundary>
+            <RouteBoundary>
               <DashboardLayout />
-            </ErrorBoundary>
+            </RouteBoundary>
           }
         >
           <Route
@@ -56,25 +90,25 @@ function App() {
           <Route
             path="links/create"
             element={
-              <ErrorBoundary>
+              <RouteBoundary>
                 <CreateLinkForm />
-              </ErrorBoundary>
+              </RouteBoundary>
             }
           />
           <Route
             path="links"
             element={
-              <ErrorBoundary>
+              <RouteBoundary>
                 <LinksView />
-              </ErrorBoundary>
+              </RouteBoundary>
             }
           />
           <Route
             path=":idLink/edit"
             element={
-              <ErrorBoundary>
+              <RouteBoundary>
                 <EditLinkForm />
-              </ErrorBoundary>
+              </RouteBoundary>
             }
           />
         </Route>
