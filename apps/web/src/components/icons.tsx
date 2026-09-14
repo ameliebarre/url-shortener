@@ -6,6 +6,7 @@ export {
   Eye as EyeIcon,
   EyeOff as EyeOffIcon,
   ArrowRight as ArrowRightIcon,
+  ArrowLeft as ArrowLeftIcon,
   ArrowDown as ArrowDownIcon,
   Zap as BoltIcon,
   Hash as HashIcon,

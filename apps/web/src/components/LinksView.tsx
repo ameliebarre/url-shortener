@@ -1,15 +1,22 @@
-import { useQuery } from '@tanstack/react-query';
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
+import { useState } from 'react';
 
 import { fetchUrls } from '../lib/api/urls';
 import { LinkCard } from './LinkCard';
+import { PaginationControls } from './PaginationControls';
 
 const PAGE_SIZE = 20;
 
 export function LinksView() {
+  const [page, setPage] = useState(1);
+
   const linksQuery = useQuery({
-    queryKey: ['urls'],
-    queryFn: () => fetchUrls(1, PAGE_SIZE),
+    queryKey: ['urls', page],
+    queryFn: () => fetchUrls(page, PAGE_SIZE),
+    placeholderData: keepPreviousData,
   });
+
+  const pagination = linksQuery.data?.pagination;
 
   return (
     <div className="flex flex-col gap-4">
@@ -38,6 +45,14 @@ export function LinksView() {
       {linksQuery.data?.codes.map((link) => (
         <LinkCard key={link.id} link={link} />
       ))}
+
+      {pagination && (
+        <PaginationControls
+          page={page}
+          totalPages={pagination.totalPages}
+          onPageChange={setPage}
+        />
+      )}
     </div>
   );
 }
