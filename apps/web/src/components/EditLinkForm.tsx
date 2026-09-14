@@ -1,62 +1,30 @@
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useState, type SubmitEvent } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
-import { ApiError } from '../lib/api-client';
-import { fetchUrlById, updateUrl } from '../lib/api/urls';
+import { useEditLinkForm } from '../hooks/use-edit-link-form';
+
 import { ArrowRightIcon } from './icons';
 
 export function EditLinkForm() {
   const { idLink } = useParams<{ idLink: string }>();
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
 
-  const linkQuery = useQuery({
-    queryKey: ['urls', idLink],
-    queryFn: () => fetchUrlById(idLink!),
-    enabled: Boolean(idLink),
-    retry: false,
-  });
+  const {
+    url,
+    setUrl,
+    code,
+    setCode,
+    expiresAt,
+    setExpiresAt,
+    link,
+    isLoading,
+    isError,
+    notFound,
+    isPending,
+    error,
+    handleSubmit,
+  } = useEditLinkForm(idLink);
 
-  const link = linkQuery.data;
-  const queryError =
-    linkQuery.error instanceof ApiError ? linkQuery.error : undefined;
-  const notFound = queryError?.status === 404;
-
-  const [url, setUrl] = useState('');
-  const [code, setCode] = useState('');
-  const [expiresAt, setExpiresAt] = useState('');
-  const [initializedForId, setInitializedForId] = useState<string>();
-
-  if (link && initializedForId !== idLink) {
-    setUrl(link.targetUrl);
-    setCode(link.shortcode);
-    setExpiresAt(link.expiresAt ? link.expiresAt.slice(0, 16) : '');
-    setInitializedForId(idLink);
-  }
-
-  const mutation = useMutation({
-    mutationFn: () =>
-      updateUrl(idLink!, {
-        url,
-        code,
-        expiresAt: expiresAt ? new Date(expiresAt).toISOString() : null,
-      }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['urls'] });
-      navigate('/dashboard/links');
-    },
-  });
-
-  const error =
-    mutation.error instanceof ApiError ? mutation.error : undefined;
-
-  function handleSubmit(e: SubmitEvent<HTMLFormElement>) {
-    e.preventDefault();
-    mutation.mutate();
-  }
-
-  if (linkQuery.isPending) {
+  if (isLoading) {
     return <p className="text-sm text-gray-500">Chargement…</p>;
   }
 
@@ -68,7 +36,7 @@ export function EditLinkForm() {
     );
   }
 
-  if (linkQuery.isError || !link) {
+  if (isError || !link) {
     return (
       <div className="w-full rounded-2xl bg-white p-6 shadow-sm">
         <p className="text-sm text-red-500">
@@ -142,10 +110,10 @@ export function EditLinkForm() {
         <div className="flex gap-2">
           <button
             type="submit"
-            disabled={mutation.isPending}
+            disabled={isPending}
             className="flex cursor-pointer items-center justify-center gap-1.5 rounded-lg bg-brand px-5 py-2.5 text-sm font-semibold text-ink transition-all duration-300 hover:gap-2.5 hover:bg-brand/60 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            {mutation.isPending ? 'Enregistrement…' : 'Enregistrer'}
+            {isPending ? 'Enregistrement…' : 'Enregistrer'}
             <ArrowRightIcon className="h-4 w-4" />
           </button>
           <button

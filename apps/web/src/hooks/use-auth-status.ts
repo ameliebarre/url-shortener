@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { getMe } from './api/auth';
+import { getMe } from '../lib/api/auth';
 
 export function useAuthStatus() {
   const token = localStorage.getItem('token');

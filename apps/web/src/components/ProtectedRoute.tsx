@@ -1,6 +1,6 @@
 import { Navigate, Outlet } from 'react-router-dom';
 
-import { useAuthStatus } from '../lib/use-auth-status';
+import { useAuthStatus } from '../hooks/use-auth-status';
 
 export function ProtectedRoute() {
   const { isPending, isAuthenticated } = useAuthStatus();

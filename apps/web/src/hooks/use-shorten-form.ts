@@ -1,8 +1,8 @@
 import { useMutation } from '@tanstack/react-query';
 import { useState, type SubmitEvent } from 'react';
 
-import { createUrl } from './api/urls';
-import { API_BASE_URL, ApiError } from './api-client';
+import { createUrl } from '../lib/api/urls';
+import { API_BASE_URL, ApiError } from '../lib/api-client';
 
 export function useShortenForm(onCreated?: () => void) {
   const [url, setUrl] = useState('');

@@ -1,7 +1,7 @@
 import { useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 
-import { useShortenForm } from '../lib/use-shorten-form';
+import { useShortenForm } from '../hooks/use-shorten-form';
 
 import { FieldErrors } from './FieldErrors';
 import { ArrowRightIcon } from './icons';

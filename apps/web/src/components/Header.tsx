@@ -1,7 +1,7 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Link, useNavigate } from 'react-router-dom';
 
-import { useAuthStatus } from '../lib/use-auth-status';
+import { useAuthStatus } from '../hooks/use-auth-status';
 import { logout } from '../lib/api/auth';
 import { LogoutIcon } from './icons';
 import { Logo } from './Logo';
