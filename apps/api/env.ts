@@ -11,6 +11,11 @@ const envSchema = z.object({
     .int()
     .positive()
     .default(60 * 60 * 2),
+  REFRESH_TOKEN_EXPIRES_IN_SECONDS: z.coerce
+    .number()
+    .int()
+    .positive()
+    .default(60 * 60 * 24 * 30),
 });
 
 const parsedEnv = envSchema.safeParse(process.env);

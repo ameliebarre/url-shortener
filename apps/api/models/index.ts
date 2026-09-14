@@ -5,3 +5,4 @@ export {
   type RevokedToken,
   type NewRevokedToken,
 } from './revoked-token.model';
+export { refreshTokensTable } from './refresh-token.model';

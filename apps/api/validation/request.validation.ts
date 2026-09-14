@@ -31,6 +31,10 @@ export const loginPostRequestBodySchema = z.object({
   password: z.string().min(3),
 });
 
+export const refreshRequestBodySchema = z.object({
+  refreshToken: z.uuid(),
+});
+
 export const urlIdParamsSchema = z.object({
   id: z.uuid(),
 });

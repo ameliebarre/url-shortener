@@ -10,7 +10,7 @@ const MAX_SHORTCODE_GENERATION_ATTEMPTS = 5;
 export async function insertUrl(
   code: string | undefined,
   url: string,
-  userId: string,
+  userId: string | null,
   expiresAt?: Date,
 ) {
   for (
@@ -53,6 +53,15 @@ export async function selectTargetUrl(code: string) {
         or(isNull(urlsTable.expiresAt), gt(urlsTable.expiresAt, new Date())),
       ),
     );
+
+  return result;
+}
+
+export async function selectUrlById(urlId: string, userId: string) {
+  const [result] = await db
+    .select()
+    .from(urlsTable)
+    .where(and(eq(urlsTable.id, urlId), eq(urlsTable.userId, userId)));
 
   return result;
 }

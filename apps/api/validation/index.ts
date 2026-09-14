@@ -1,6 +1,7 @@
 export {
   signupPostRequestBodySchema,
   loginPostRequestBodySchema,
+  refreshRequestBodySchema,
   shortenPostRequestBodySchema,
   updateUrlBodySchema,
   urlIdParamsSchema,

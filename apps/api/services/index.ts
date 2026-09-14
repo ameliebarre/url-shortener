@@ -2,8 +2,14 @@ export { getUserByEmail, getUserById, insertUser } from './user.service';
 export {
   insertUrl,
   selectTargetUrl,
+  selectUrlById,
   selectCodesFromUser,
   updateUserURL,
   deleteUserURL,
 } from './url.service';
 export { revokeToken, isTokenRevoked } from './revoked-token.service';
+export {
+  createRefreshToken,
+  consumeRefreshToken,
+  revokeAllRefreshTokensForUser,
+} from './refresh-token.service';
