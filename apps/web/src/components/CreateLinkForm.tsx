@@ -1,50 +1,33 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { useState, type SubmitEvent } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from 'react-router-dom';
 
-import { API_BASE_URL, ApiError } from '../lib/api-client';
-import { createUrl } from '../lib/api/urls';
+import { useShortenForm } from '../lib/use-shorten-form';
+
 import { FieldErrors } from './FieldErrors';
 import { ArrowRightIcon, CheckIcon, CopyIcon } from './icons';
 import { Modal } from './Modal';
 
 export function CreateLinkForm() {
   const navigate = useNavigate();
-  const [url, setUrl] = useState('');
-  const [code, setCode] = useState('');
-  const [expiresAt, setExpiresAt] = useState('');
-  const [shortLink, setShortLink] = useState<string | null>(null);
-  const [copied, setCopied] = useState(false);
   const queryClient = useQueryClient();
 
-  const mutation = useMutation({
-    mutationFn: createUrl,
-    onSuccess: (result) => {
-      setShortLink(`${API_BASE_URL}/${result.shortcode}`);
-      setUrl('');
-      setCode('');
-      setExpiresAt('');
-      queryClient.invalidateQueries({ queryKey: ['urls'] });
-    },
+  const {
+    url,
+    setUrl,
+    code,
+    setCode,
+    expiresAt,
+    setExpiresAt,
+    shortLink,
+    closeResult,
+    copied,
+    handleCopy,
+    isPending,
+    error,
+    handleSubmit,
+  } = useShortenForm(() => {
+    queryClient.invalidateQueries({ queryKey: ['urls'] });
   });
-
-  const error = mutation.error instanceof ApiError ? mutation.error : undefined;
-
-  function handleSubmit(e: SubmitEvent<HTMLFormElement>) {
-    e.preventDefault();
-    mutation.mutate({
-      url,
-      code: code.trim() || undefined,
-      expiresAt: expiresAt ? new Date(expiresAt).toISOString() : undefined,
-    });
-  }
-
-  async function handleCopy() {
-    if (!shortLink) return;
-    await navigator.clipboard.writeText(shortLink);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1500);
-  }
 
   return (
     <>
@@ -72,12 +55,10 @@ export function CreateLinkForm() {
             />
             <button
               type="submit"
-              disabled={mutation.isPending}
+              disabled={isPending}
               className="flex cursor-pointer items-center justify-center gap-1.5 rounded-lg bg-brand px-5 py-2.5 text-sm font-semibold whitespace-nowrap text-ink transition-all duration-300 hover:gap-2.5 hover:bg-brand/60 disabled:cursor-not-allowed disabled:opacity-60"
             >
-              {mutation.isPending
-                ? 'Génération…'
-                : 'Générer votre lien Shortly'}
+              {isPending ? 'Génération…' : 'Générer votre lien Shortly'}
               <ArrowRightIcon className="h-4 w-4" />
             </button>
           </div>
@@ -124,7 +105,7 @@ export function CreateLinkForm() {
       </div>
 
       {shortLink && (
-        <Modal onClose={() => setShortLink(null)}>
+        <Modal onClose={closeResult}>
           <h2 className="text-xl font-semibold text-ink">
             Votre lien est prêt !
           </h2>
@@ -153,7 +134,7 @@ export function CreateLinkForm() {
           <button
             type="button"
             onClick={() => {
-              setShortLink(null);
+              closeResult();
               navigate('/dashboard/links');
             }}
             className="mt-4 block w-full text-left cursor-pointer text-sm font-semibold text-ink underline underline-offset-2"

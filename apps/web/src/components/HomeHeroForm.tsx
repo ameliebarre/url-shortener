@@ -1,47 +1,26 @@
-import { useMutation } from '@tanstack/react-query';
-import { useState, type SubmitEvent } from 'react';
+import { useShortenForm } from '../lib/use-shorten-form';
 
-import { API_BASE_URL, ApiError } from '../lib/api-client';
-import { createUrl } from '../lib/api/urls';
 import { FieldErrors } from './FieldErrors';
 import { ArrowRightIcon } from './icons';
 import { ShortenOptionalFields } from './ShortenOptionalFields';
 import { ShortenResultModal } from './ShortenResultModal';
 
 export function HomeHeroForm() {
-  const [url, setUrl] = useState('');
-  const [code, setCode] = useState('');
-  const [expiresAt, setExpiresAt] = useState('');
-  const [shortLink, setShortLink] = useState<string | null>(null);
-  const [copied, setCopied] = useState(false);
-
-  const mutation = useMutation({
-    mutationFn: createUrl,
-    onSuccess: (result) => {
-      setShortLink(`${API_BASE_URL}/${result.shortcode}`);
-      setUrl('');
-      setCode('');
-      setExpiresAt('');
-    },
-  });
-
-  const error = mutation.error instanceof ApiError ? mutation.error : undefined;
-
-  function handleSubmit(e: SubmitEvent<HTMLFormElement>) {
-    e.preventDefault();
-    mutation.mutate({
-      url,
-      code: code.trim() || undefined,
-      expiresAt: expiresAt ? new Date(expiresAt).toISOString() : undefined,
-    });
-  }
-
-  async function handleCopy() {
-    if (!shortLink) return;
-    await navigator.clipboard.writeText(shortLink);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 1500);
-  }
+  const {
+    url,
+    setUrl,
+    code,
+    setCode,
+    expiresAt,
+    setExpiresAt,
+    shortLink,
+    closeResult,
+    copied,
+    handleCopy,
+    isPending,
+    error,
+    handleSubmit,
+  } = useShortenForm();
 
   return (
     <div className="relative">
@@ -72,10 +51,10 @@ export function HomeHeroForm() {
             />
             <button
               type="submit"
-              disabled={mutation.isPending}
+              disabled={isPending}
               className="flex cursor-pointer items-center justify-center gap-1.5 rounded-lg bg-brand px-5 py-2.5 text-sm font-semibold whitespace-nowrap text-ink transition-all duration-300 hover:bg-brand/90 disabled:cursor-not-allowed disabled:opacity-60"
             >
-              {mutation.isPending ? 'Shortening…' : 'Shorten it'}
+              {isPending ? 'Shortening…' : 'Shorten it'}
               <ArrowRightIcon className="h-4 w-4" />
             </button>
           </div>
@@ -103,7 +82,7 @@ export function HomeHeroForm() {
           shortLink={shortLink}
           copied={copied}
           onCopy={handleCopy}
-          onClose={() => setShortLink(null)}
+          onClose={closeResult}
         />
       )}
     </div>
