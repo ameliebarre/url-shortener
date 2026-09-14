@@ -4,3 +4,6 @@ export const revokedTokensTable = pgTable('revoked_token', {
   jti: uuid().primaryKey(),
   expiresAt: timestamp('expires_at').notNull(),
 });
+
+export type RevokedToken = typeof revokedTokensTable.$inferSelect;
+export type NewRevokedToken = typeof revokedTokensTable.$inferInsert;

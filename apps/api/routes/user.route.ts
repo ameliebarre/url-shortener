@@ -2,7 +2,7 @@ import express, { Request, Response } from 'express';
 import { ParamsDictionary } from 'express-serve-static-core';
 
 import { ensureAuthenticated } from '@/middlewares';
-import { usersTable } from '@/models';
+import { NewUser } from '@/models';
 import {
   getUserByEmail,
   getUserById,
@@ -25,11 +25,11 @@ import {
 const router = express.Router();
 
 type SignupBody = Pick<
-  typeof usersTable.$inferInsert,
+  NewUser,
   'firstname' | 'lastname' | 'email' | 'password'
 >;
 
-type LoginBody = Pick<typeof usersTable.$inferInsert, 'email' | 'password'>;
+type LoginBody = Pick<NewUser, 'email' | 'password'>;
 
 router.post(
   '/signup',

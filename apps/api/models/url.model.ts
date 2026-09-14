@@ -18,3 +18,6 @@ export const urlsTable = pgTable(
   },
   (table) => [index('url_user_id_idx').on(table.userId)],
 );
+
+export type Url = typeof urlsTable.$inferSelect;
+export type NewUrl = typeof urlsTable.$inferInsert;
