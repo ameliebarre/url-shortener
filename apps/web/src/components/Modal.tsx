@@ -5,12 +5,13 @@ import { CloseIcon } from './icons';
 interface ModalProps {
   onClose: () => void;
   children: ReactNode;
+  labelledBy?: string;
 }
 
 const FOCUSABLE_SELECTOR =
   'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])';
 
-export function Modal({ onClose, children }: ModalProps) {
+export function Modal({ onClose, children, labelledBy }: ModalProps) {
   const contentRef = useRef<HTMLDivElement>(null);
   const onCloseRef = useRef(onClose);
   onCloseRef.current = onClose;
@@ -60,6 +61,7 @@ export function Modal({ onClose, children }: ModalProps) {
         ref={contentRef}
         role="dialog"
         aria-modal="true"
+        aria-labelledby={labelledBy}
         tabIndex={-1}
         onClick={(e) => e.stopPropagation()}
         className="relative w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl outline-none"

@@ -7,12 +7,16 @@ import { API_BASE_URL } from '../lib/api-client';
 export function useLinkCard(link: ShortUrl) {
   const shortUrl = `${API_BASE_URL}/${link.shortcode}`;
   const [copied, setCopied] = useState(false);
+  const [isConfirmingDelete, setIsConfirmingDelete] = useState(false);
   const queryClient = useQueryClient();
 
   const deleteMutation = useMutation({
     mutationFn: () => deleteUrl(link.id),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['urls'] });
+    },
+    onSettled: () => {
+      setIsConfirmingDelete(false);
     },
   });
 
@@ -22,17 +26,18 @@ export function useLinkCard(link: ShortUrl) {
     setTimeout(() => setCopied(false), 1500);
   }
 
-  function handleDelete() {
-    if (window.confirm('Delete this link?')) {
-      deleteMutation.mutate();
-    }
+  function confirmDelete() {
+    deleteMutation.mutate();
   }
 
   return {
     shortUrl,
     copied,
     handleCopy,
-    handleDelete,
+    isConfirmingDelete,
+    openDeleteConfirm: () => setIsConfirmingDelete(true),
+    closeDeleteConfirm: () => setIsConfirmingDelete(false),
+    confirmDelete,
     isDeleting: deleteMutation.isPending,
   };
 }

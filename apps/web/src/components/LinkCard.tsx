@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 
 import { useLinkCard } from '../hooks/use-link-card';
 
+import { ConfirmDialog } from './ConfirmDialog';
 import {
   ChainIcon,
   CheckIcon,
@@ -26,8 +27,16 @@ function formatDate(value: string) {
 }
 
 export function LinkCard({ link }: LinkCardProps) {
-  const { shortUrl, copied, handleCopy, handleDelete, isDeleting } =
-    useLinkCard(link);
+  const {
+    shortUrl,
+    copied,
+    handleCopy,
+    isConfirmingDelete,
+    openDeleteConfirm,
+    closeDeleteConfirm,
+    confirmDelete,
+    isDeleting,
+  } = useLinkCard(link);
 
   return (
     <div className="rounded-xl border border-gray-100 bg-white p-4">
@@ -89,7 +98,7 @@ export function LinkCard({ link }: LinkCardProps) {
           </Link>
           <button
             type="button"
-            onClick={handleDelete}
+            onClick={openDeleteConfirm}
             disabled={isDeleting}
             aria-label="Delete"
             className="cursor-pointer text-gray-400 hover:text-red-500 disabled:cursor-not-allowed disabled:opacity-60"
@@ -98,6 +107,16 @@ export function LinkCard({ link }: LinkCardProps) {
           </button>
         </div>
       </div>
+
+      {isConfirmingDelete && (
+        <ConfirmDialog
+          title="Delete this link?"
+          confirmLabel={isDeleting ? 'Deleting…' : 'Delete'}
+          isConfirming={isDeleting}
+          onConfirm={confirmDelete}
+          onClose={closeDeleteConfirm}
+        />
+      )}
     </div>
   );
 }
