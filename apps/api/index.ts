@@ -8,7 +8,7 @@ import {
   authRateLimiter,
   errorMiddleware,
 } from '@/middlewares';
-import { urlRouter, userRouter } from '@/routes';
+import { redirectRouter, urlRouter, userRouter } from '@/routes';
 import { asyncHandler } from '@/utils';
 
 const app = express();
@@ -23,7 +23,8 @@ app.get('/', (req: Request, res: Response) => {
 });
 
 app.use('/auth', authRateLimiter, userRouter);
-app.use(urlRouter);
+app.use('/urls', urlRouter);
+app.use(redirectRouter);
 
 app.use(errorMiddleware);
 

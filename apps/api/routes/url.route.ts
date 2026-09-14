@@ -1,15 +1,10 @@
 import express, { Request, Response } from 'express';
 
-import {
-  ensureAuthenticated,
-  redirectRateLimiter,
-  shortenRateLimiter,
-} from '@/middlewares';
+import { ensureAuthenticated, shortenRateLimiter } from '@/middlewares';
 import {
   deleteUserURL,
   insertUrl,
   selectCodesFromUser,
-  selectTargetUrl,
   updateUserURL,
 } from '@/services';
 import { asyncHandler, errorBody, validationErrorBody } from '@/utils';
@@ -140,22 +135,6 @@ router.delete(
     }
 
     return res.status(200).json({ deleted: true });
-  }),
-);
-
-router.get(
-  '/:shortcode',
-  redirectRateLimiter,
-  asyncHandler(async (req: Request, res: Response) => {
-    const code = req.params.shortcode;
-
-    const result = await selectTargetUrl(code);
-
-    if (!result) {
-      return res.status(404).json(errorBody('Invalid URL'));
-    }
-
-    return res.redirect(result.targetUrl);
   }),
 );
 
