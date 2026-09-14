@@ -1,13 +1,15 @@
-import { Link } from 'react-router-dom';
 
 import { CheckIcon, CopyIcon } from './icons';
 import { Modal } from './Modal';
+
+import type { ReactNode } from 'react';
 
 type ShortenResultModalProps = {
   shortLink: string;
   copied: boolean;
   onCopy: () => void;
   onClose: () => void;
+  footer: ReactNode;
 };
 
 export function ShortenResultModal({
@@ -15,6 +17,7 @@ export function ShortenResultModal({
   copied,
   onCopy,
   onClose,
+  footer,
 }: ShortenResultModalProps) {
   return (
     <Modal onClose={onClose}>
@@ -43,15 +46,7 @@ export function ShortenResultModal({
         </button>
       </div>
 
-      <p className="mt-4 text-sm text-gray-500">
-        <Link
-          to="/login"
-          className="font-semibold text-left text-ink underline underline-offset-2"
-        >
-          Connectez-vous
-        </Link>{' '}
-        pour retrouver tous vos liens générés.
-      </p>
+      {footer}
     </Modal>
   );
 }

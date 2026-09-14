@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom';
+
 import { useShortenForm } from '../lib/use-shorten-form';
 
 import { FieldErrors } from './FieldErrors';
@@ -83,6 +85,17 @@ export function HomeHeroForm() {
           copied={copied}
           onCopy={handleCopy}
           onClose={closeResult}
+          footer={
+            <p className="mt-4 text-sm text-gray-500">
+              <Link
+                to="/login"
+                className="font-semibold text-left text-ink underline underline-offset-2"
+              >
+                Connectez-vous
+              </Link>{' '}
+              pour retrouver tous vos liens générés.
+            </p>
+          }
         />
       )}
     </div>

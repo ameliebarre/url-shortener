@@ -4,8 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { useShortenForm } from '../lib/use-shorten-form';
 
 import { FieldErrors } from './FieldErrors';
-import { ArrowRightIcon, CheckIcon, CopyIcon } from './icons';
-import { Modal } from './Modal';
+import { ArrowRightIcon } from './icons';
+import { ShortenResultModal } from './ShortenResultModal';
 
 export function CreateLinkForm() {
   const navigate = useNavigate();
@@ -105,43 +105,24 @@ export function CreateLinkForm() {
       </div>
 
       {shortLink && (
-        <Modal onClose={closeResult}>
-          <h2 className="text-xl font-semibold text-ink">
-            Votre lien est prêt !
-          </h2>
-
-          <div className="mt-4 flex items-center gap-3 rounded-xl bg-gray-100 p-4">
-            <span className="flex-1 truncate text-sm font-medium text-ink">
-              {shortLink}
-            </span>
+        <ShortenResultModal
+          shortLink={shortLink}
+          copied={copied}
+          onCopy={handleCopy}
+          onClose={closeResult}
+          footer={
             <button
               type="button"
-              onClick={handleCopy}
-              className="flex shrink-0 cursor-pointer items-center gap-1.5 rounded-lg bg-brand px-4 py-2 text-sm font-semibold whitespace-nowrap text-ink transition-all duration-300 hover:gap-2.5 hover:bg-brand/60"
+              onClick={() => {
+                closeResult();
+                navigate('/dashboard/links');
+              }}
+              className="mt-4 block w-full cursor-pointer text-left text-sm font-semibold text-ink underline underline-offset-2"
             >
-              {copied ? 'Copié !' : 'Copier le lien'}
-              {copied ? (
-                <CheckIcon
-                  key="check"
-                  className="h-4 w-4 animate-[pop_0.35s_ease-out]"
-                />
-              ) : (
-                <CopyIcon key="copy" className="h-4 w-4" />
-              )}
+              Voir mon lien fraîchement créé
             </button>
-          </div>
-
-          <button
-            type="button"
-            onClick={() => {
-              closeResult();
-              navigate('/dashboard/links');
-            }}
-            className="mt-4 block w-full text-left cursor-pointer text-sm font-semibold text-ink underline underline-offset-2"
-          >
-            Voir mon lien fraîchement créé
-          </button>
-        </Modal>
+          }
+        />
       )}
     </>
   );
