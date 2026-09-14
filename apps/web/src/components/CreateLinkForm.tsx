@@ -84,6 +84,7 @@ export function CreateLinkForm() {
           {error && !error.fieldErrors && (
             <p className="mt-2 text-xs text-red-500">{error.message}</p>
           )}
+          <FieldErrors errors={error?.fieldErrors?.url} />
 
           <div className="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
             <div>

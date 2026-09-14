@@ -3,6 +3,7 @@ import { useState, type SubmitEvent } from 'react';
 
 import { API_BASE_URL, ApiError } from '../lib/api-client';
 import { createUrl } from '../lib/api/urls';
+import { FieldErrors } from './FieldErrors';
 import { ArrowRightIcon } from './icons';
 import { ShortenOptionalFields } from './ShortenOptionalFields';
 import { ShortenResultModal } from './ShortenResultModal';
@@ -81,6 +82,7 @@ export function HomeHeroForm() {
           {error && !error.fieldErrors && (
             <p className="mt-2 text-xs text-red-400">{error.message}</p>
           )}
+          <FieldErrors errors={error?.fieldErrors?.url} />
 
           <ShortenOptionalFields
             code={code}
