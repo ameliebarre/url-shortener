@@ -33,27 +33,29 @@ export interface UpdateUrlInput {
 }
 
 export function createUrl(input: CreateUrlInput) {
-  return apiFetch<ShortUrl>('/shorten', {
+  return apiFetch<ShortUrl>('/urls/shorten', {
     method: 'POST',
     body: JSON.stringify(input),
   });
 }
 
 export function fetchUrlById(id: string) {
-  return apiFetch<ShortUrl>(`/codes/${id}`);
+  return apiFetch<ShortUrl>(`/urls/codes/${id}`);
 }
 
 export function updateUrl(id: string, input: UpdateUrlInput) {
-  return apiFetch<ShortUrl>(`/${id}`, {
+  return apiFetch<ShortUrl>(`/urls/${id}`, {
     method: 'PATCH',
     body: JSON.stringify(input),
   });
 }
 
 export function fetchUrls(page: number, pageSize: number) {
-  return apiFetch<PaginatedUrls>(`/codes?page=${page}&pageSize=${pageSize}`);
+  return apiFetch<PaginatedUrls>(
+    `/urls/codes?page=${page}&pageSize=${pageSize}`,
+  );
 }
 
 export function deleteUrl(id: string) {
-  return apiFetch<{ deleted: true }>(`/${id}`, { method: 'DELETE' });
+  return apiFetch<{ deleted: true }>(`/urls/${id}`, { method: 'DELETE' });
 }
