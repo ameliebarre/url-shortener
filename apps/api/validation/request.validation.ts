@@ -14,9 +14,7 @@ export const signupPostRequestBodySchema = z.object({
   firstname: z
     .string()
     .max(55, 'firstname must be at most 55 characters long.'),
-  lastname: z
-    .string()
-    .max(55, 'lastname must be at most 55 characters long.'),
+  lastname: z.string().max(55, 'lastname must be at most 55 characters long.'),
   email: normalizedEmail,
   password: z
     .string()
@@ -46,15 +44,22 @@ const futureExpiresAt = z.coerce.date().refine((date) => date > new Date(), {
   message: 'expiresAt must be in the future.',
 });
 
+// Restricting to http/https prevents the redirect endpoint from being used
+// to shorten javascript:/data:/file: URLs and other non-navigational schemes.
+const httpUrl = z.url({
+  protocol: /^https?$/,
+  error: 'Url must use the http or https protocol.',
+});
+
 export const shortenPostRequestBodySchema = z.object({
-  url: z.url(),
+  url: httpUrl,
   code: shortcode.optional(),
   expiresAt: futureExpiresAt.optional(),
 });
 
 export const updateUrlBodySchema = z
   .object({
-    url: z.url().optional(),
+    url: httpUrl.optional(),
     code: shortcode.optional(),
     expiresAt: z.union([futureExpiresAt, z.null()]).optional(),
   })
