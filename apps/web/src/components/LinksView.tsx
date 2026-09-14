@@ -13,16 +13,16 @@ export function LinksView() {
 
   return (
     <div className="flex flex-col gap-4">
-      <h2 className="text-lg font-semibold text-ink">Mes liens</h2>
+      <h2 className="text-lg font-semibold text-ink">My links</h2>
 
       {linksQuery.isPending && (
-        <p className="text-sm text-gray-500">Chargement…</p>
+        <p className="text-sm text-gray-500">Loading…</p>
       )}
 
       {linksQuery.isError && (
         <div className="w-full rounded-2xl bg-white p-6 shadow-sm">
           <p className="text-sm text-red-500">
-            Impossible de charger vos liens. Réessayez plus tard.
+            Unable to load your links. Please try again later.
           </p>
         </div>
       )}
@@ -30,7 +30,7 @@ export function LinksView() {
       {linksQuery.data?.codes.length === 0 && (
         <div className="w-full rounded-2xl bg-white p-6 shadow-sm">
           <p className="text-sm text-gray-500">
-            Vous n&apos;avez pas encore de liens à afficher ici.
+            You don&apos;t have any links to show here yet.
           </p>
         </div>
       )}

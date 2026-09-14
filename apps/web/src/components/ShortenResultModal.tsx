@@ -22,7 +22,7 @@ export function ShortenResultModal({
   return (
     <Modal onClose={onClose}>
       <h2 className="text-xl font-semibold text-ink">
-        Votre lien est prêt !
+        Your link is ready!
       </h2>
 
       <div className="mt-4 flex items-center gap-3 rounded-xl bg-gray-100 p-4">
@@ -34,7 +34,7 @@ export function ShortenResultModal({
           onClick={onCopy}
           className="flex shrink-0 cursor-pointer items-center gap-1.5 rounded-lg bg-brand px-4 py-2 text-sm font-semibold whitespace-nowrap text-ink transition-all duration-300 hover:gap-2.5 hover:bg-brand/60"
         >
-          {copied ? 'Copié !' : 'Copier le lien'}
+          {copied ? 'Copied!' : 'Copy link'}
           {copied ? (
             <CheckIcon
               key="check"

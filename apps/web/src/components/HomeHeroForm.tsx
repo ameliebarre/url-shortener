@@ -91,9 +91,9 @@ export function HomeHeroForm() {
                 to="/login"
                 className="font-semibold text-left text-ink underline underline-offset-2"
               >
-                Connectez-vous
+                Log in
               </Link>{' '}
-              pour retrouver tous vos liens générés.
+              to find all your generated links.
             </p>
           }
         />

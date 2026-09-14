@@ -23,7 +23,7 @@ export function useLinkCard(link: ShortUrl) {
   }
 
   function handleDelete() {
-    if (window.confirm('Supprimer ce lien ?')) {
+    if (window.confirm('Delete this link?')) {
       deleteMutation.mutate();
     }
   }

@@ -25,13 +25,13 @@ export function EditLinkForm() {
   } = useEditLinkForm(idLink);
 
   if (isLoading) {
-    return <p className="text-sm text-gray-500">Chargement…</p>;
+    return <p className="text-sm text-gray-500">Loading…</p>;
   }
 
   if (notFound) {
     return (
       <div className="w-full rounded-2xl bg-white p-6 shadow-sm">
-        <p className="text-sm text-gray-500">Ce lien est introuvable.</p>
+        <p className="text-sm text-gray-500">This link could not be found.</p>
       </div>
     );
   }
@@ -40,7 +40,7 @@ export function EditLinkForm() {
     return (
       <div className="w-full rounded-2xl bg-white p-6 shadow-sm">
         <p className="text-sm text-red-500">
-          Impossible de charger ce lien. Réessayez plus tard.
+          Unable to load this link. Please try again later.
         </p>
       </div>
     );
@@ -48,12 +48,12 @@ export function EditLinkForm() {
 
   return (
     <div className="w-full rounded-2xl bg-white p-6 shadow-sm">
-      <h2 className="text-lg font-semibold text-ink">Modifier le lien</h2>
+      <h2 className="text-lg font-semibold text-ink">Edit link</h2>
 
       <form onSubmit={handleSubmit} className="mt-4 flex flex-col gap-4">
         <div>
           <label htmlFor="edit-url" className="text-sm font-medium text-ink">
-            Lien cible
+            Target link
           </label>
           <input
             id="edit-url"
@@ -67,7 +67,7 @@ export function EditLinkForm() {
 
         <div>
           <label htmlFor="edit-code" className="text-sm font-medium text-ink">
-            Code court
+            Short code
           </label>
           <input
             id="edit-code"
@@ -83,7 +83,7 @@ export function EditLinkForm() {
             htmlFor="edit-expires"
             className="text-sm font-medium text-ink"
           >
-            Date d&apos;expiration
+            Expiration date
           </label>
           <div className="mt-1.5 flex items-center gap-2">
             <input
@@ -99,7 +99,7 @@ export function EditLinkForm() {
                 onClick={() => setExpiresAt('')}
                 className="cursor-pointer text-xs font-medium whitespace-nowrap text-gray-500 hover:text-ink"
               >
-                Retirer
+                Remove
               </button>
             )}
           </div>
@@ -113,7 +113,7 @@ export function EditLinkForm() {
             disabled={isPending}
             className="flex cursor-pointer items-center justify-center gap-1.5 rounded-lg bg-brand px-5 py-2.5 text-sm font-semibold text-ink transition-all duration-300 hover:gap-2.5 hover:bg-brand/60 disabled:cursor-not-allowed disabled:opacity-60"
           >
-            {isPending ? 'Enregistrement…' : 'Enregistrer'}
+            {isPending ? 'Saving…' : 'Save'}
             <ArrowRightIcon className="h-4 w-4" />
           </button>
           <button
@@ -121,7 +121,7 @@ export function EditLinkForm() {
             onClick={() => navigate('/dashboard/links')}
             className="cursor-pointer rounded-lg border border-gray-200 px-5 py-2.5 text-sm font-medium text-ink hover:bg-gray-50"
           >
-            Annuler
+            Cancel
           </button>
         </div>
       </form>

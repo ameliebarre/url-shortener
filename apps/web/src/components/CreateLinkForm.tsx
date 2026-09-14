@@ -33,7 +33,7 @@ export function CreateLinkForm() {
     <>
       <div className="w-full rounded-2xl bg-white p-6 shadow-sm">
         <h2 className="text-lg font-semibold text-ink">
-          Création de votre lien court
+          Create your short link
         </h2>
 
         <form onSubmit={handleSubmit} className="mt-4">
@@ -41,7 +41,7 @@ export function CreateLinkForm() {
             htmlFor="new-link-url"
             className="text-sm font-medium text-ink"
           >
-            Lien à raccourcir
+            Link to shorten
           </label>
           <div className="mt-1.5 flex flex-col gap-2 sm:flex-row">
             <input
@@ -50,7 +50,7 @@ export function CreateLinkForm() {
               required
               value={url}
               onChange={(e) => setUrl(e.target.value)}
-              placeholder="https://votre-lien-long.com/…"
+              placeholder="https://your-long-link.com/…"
               className="w-full rounded-lg border-2 border-transparent bg-gray-50 px-4 py-2.5 text-sm text-ink placeholder:text-gray-400 outline-none transition-colors focus:border-ink"
             />
             <button
@@ -58,7 +58,7 @@ export function CreateLinkForm() {
               disabled={isPending}
               className="flex cursor-pointer items-center justify-center gap-1.5 rounded-lg bg-brand px-5 py-2.5 text-sm font-semibold whitespace-nowrap text-ink transition-all duration-300 hover:gap-2.5 hover:bg-brand/60 disabled:cursor-not-allowed disabled:opacity-60"
             >
-              {isPending ? 'Génération…' : 'Générer votre lien Shortly'}
+              {isPending ? 'Generating…' : 'Generate your Shortly link'}
               <ArrowRightIcon className="h-4 w-4" />
             </button>
           </div>
@@ -73,13 +73,13 @@ export function CreateLinkForm() {
                 htmlFor="new-link-code"
                 className="block text-xs font-medium text-gray-500"
               >
-                Code personnalisé (optionnel)
+                Custom code (optional)
               </label>
               <input
                 id="new-link-code"
                 value={code}
                 onChange={(e) => setCode(e.target.value)}
-                placeholder="mon-lien"
+                placeholder="my-link"
                 className="mt-1 w-full rounded-lg border-2 border-transparent bg-gray-50 px-3 py-2 text-sm text-ink placeholder:text-gray-400 outline-none transition-colors focus:border-ink"
               />
               <FieldErrors errors={error?.fieldErrors?.code} />
@@ -89,7 +89,7 @@ export function CreateLinkForm() {
                 htmlFor="new-link-expires"
                 className="block text-xs font-medium text-gray-500"
               >
-                Expiration (optionnel)
+                Expiration (optional)
               </label>
               <input
                 id="new-link-expires"
@@ -119,7 +119,7 @@ export function CreateLinkForm() {
               }}
               className="mt-4 block w-full cursor-pointer text-left text-sm font-semibold text-ink underline underline-offset-2"
             >
-              Voir mon lien fraîchement créé
+              View my freshly created link
             </button>
           }
         />

@@ -9,7 +9,7 @@ export function DashboardSidebar() {
         to="/dashboard/links/create"
         className="flex w-full cursor-pointer items-center justify-center gap-1.5 rounded-lg bg-brand px-5 py-2.5 text-sm font-semibold text-ink transition-all duration-300 hover:gap-2.5 hover:bg-brand/60"
       >
-        Créer mon lien
+        Create my link
         <ArrowRightIcon className="h-4 w-4" />
       </Link>
 
@@ -23,7 +23,7 @@ export function DashboardSidebar() {
         }
       >
         <ChainIcon className="h-4 w-4" />
-        Mes liens
+        My links
       </NavLink>
     </aside>
   );

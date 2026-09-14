@@ -35,7 +35,7 @@ export function Header() {
               type="button"
               onClick={() => logoutMutation.mutate()}
               disabled={logoutMutation.isPending}
-              aria-label="Se déconnecter"
+              aria-label="Log out"
               className="cursor-pointer rounded-full p-2 text-gray-400 transition-colors hover:bg-gray-100 hover:text-ink disabled:cursor-not-allowed disabled:opacity-60"
             >
               <LogoutIcon className="h-5 w-5" />

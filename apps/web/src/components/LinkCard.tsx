@@ -18,7 +18,7 @@ interface LinkCardProps {
 }
 
 function formatDate(value: string) {
-  return new Date(value).toLocaleDateString('fr-FR', {
+  return new Date(value).toLocaleDateString('en-US', {
     day: 'numeric',
     month: 'short',
     year: 'numeric',
@@ -49,7 +49,7 @@ export function LinkCard({ link }: LinkCardProps) {
             <button
               type="button"
               onClick={handleCopy}
-              aria-label="Copier le lien"
+              aria-label="Copy link"
               className={`cursor-pointer transition-colors ${copied ? 'text-green-500' : 'text-gray-400 hover:text-ink'}`}
             >
               {copied ? (
@@ -72,17 +72,17 @@ export function LinkCard({ link }: LinkCardProps) {
             <span className="flex items-center gap-1 rounded-full bg-gray-100 px-2.5 py-1">
               <ClockIcon className="h-3.5 w-3.5" />
               {link.expiresAt
-                ? `Expire le ${formatDate(link.expiresAt)}`
-                : 'Aucune expiration'}
+                ? `Expires on ${formatDate(link.expiresAt)}`
+                : 'No expiration'}
             </span>
-            <span>Créé le {formatDate(link.createdAt)}</span>
+            <span>Created on {formatDate(link.createdAt)}</span>
           </div>
         </div>
 
         <div className="flex shrink-0 items-center gap-3">
           <Link
             to={`/dashboard/${link.id}/edit`}
-            aria-label="Modifier"
+            aria-label="Edit"
             className="cursor-pointer text-gray-400 hover:text-ink"
           >
             <PencilIcon className="h-4 w-4" />
@@ -91,7 +91,7 @@ export function LinkCard({ link }: LinkCardProps) {
             type="button"
             onClick={handleDelete}
             disabled={isDeleting}
-            aria-label="Supprimer"
+            aria-label="Delete"
             className="cursor-pointer text-gray-400 hover:text-red-500 disabled:cursor-not-allowed disabled:opacity-60"
           >
             <TrashIcon className="h-4 w-4" />
