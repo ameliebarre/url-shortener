@@ -83,7 +83,7 @@ Chaque route délègue à un service ; les services sont la seule couche à parl
 
 ## API
 
-Toutes les routes sous `/auth` sont protégées par un rate limiter dédié (20 req/15min).
+Toutes les routes sous `/auth` sont protégées par un rate limiter dédié (20 req/15min). `/urls/shorten` est limité à 30 req/15min, `/:shortcode` à 100 req/min.
 
 | Méthode | Route | Auth | Description |
 |---|---|---|---|
@@ -92,11 +92,14 @@ Toutes les routes sous `/auth` sont protégées par un rate limiter dédié (20 
 | POST | `/auth/refresh` | non (refresh token) | Renouvelle `token`/`refreshToken` (rotation à usage unique) |
 | GET | `/auth/me` | oui | Infos de l'utilisateur connecté |
 | POST | `/auth/logout` | oui | Révoque le token courant + tous les refresh tokens |
-| POST | `/shorten` | optionnelle | Crée un lien court (code personnalisé et expiration optionnels) |
-| GET | `/codes` | oui | Liste paginée des liens de l'utilisateur (`?page=&pageSize=`) |
-| PATCH | `/:id` | oui | Modifie un lien (propriétaire uniquement) |
-| DELETE | `/:id` | oui | Supprime un lien (propriétaire uniquement) |
+| POST | `/urls/shorten` | optionnelle | Crée un lien court (code personnalisé et expiration optionnels) |
+| GET | `/urls/codes` | oui | Liste paginée des liens de l'utilisateur (`?page=&pageSize=`) |
+| GET | `/urls/codes/:id` | oui | Récupère un lien par id (propriétaire uniquement) |
+| PATCH | `/urls/:id` | oui | Modifie un lien (propriétaire uniquement) |
+| DELETE | `/urls/:id` | oui | Supprime un lien (propriétaire uniquement) |
 | GET | `/:shortcode` | non | Redirige vers l'URL cible |
+
+`/urls/*` et `/:shortcode` vivent dans des routers séparés : la gestion des liens est sous le préfixe `/urls`, la redirection publique reste seule à la racine pour qu'un short code d'un seul segment ne puisse jamais entrer en collision avec une route de gestion.
 
 Les erreurs suivent un format unifié : `{ "error": { "message": "...", "fieldErrors": { ... } } }` (`fieldErrors` uniquement sur les erreurs de validation).
 
@@ -112,8 +115,3 @@ Token d'accès JWT (2h) + refresh token longue durée (30j, à usage unique, rot
 | `npm run build:api` / `build:web` | Build de production |
 | `npm run lint` | ESLint sur tout le monorepo |
 | `npm run format` | Prettier sur tout le monorepo |
-
-## Branches
-
-- `main` — backend
-- `frontend` — travail frontend, construit par-dessus le backend de `main`
